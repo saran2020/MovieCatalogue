@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Movie Catalogue</string>
+    <string name="strSettings">Settings</string>
 </resources>

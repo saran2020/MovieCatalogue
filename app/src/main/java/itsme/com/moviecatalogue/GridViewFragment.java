@@ -35,6 +35,15 @@ import java.util.Locale;
 public class GridViewFragment extends Fragment {
 
     //Constants & global variables
+    private final String[] TITLE = new String[20];
+    private final String[] RELEASE_DATE = new String[20];
+    private final String[] OVERVIEW = new String[20];
+    private final String[] IMAGE = new String[20];
+    private final Float[] RATING = new Float[20];
+
+    //Made it global so that this can be used to call adapter in post execute
+    GridView gridViewMovie;
+
     //Overrided methods
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +64,7 @@ public class GridViewFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_grid_view_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -68,23 +78,17 @@ public class GridViewFragment extends Fragment {
 
         rootView.findViewById(R.id.pb1).setVisibility(View.VISIBLE);    //Set visibility TRUE for progressbar
 
-        GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
-        gridViewMovie.setAdapter(new GridViewAdapter(getActivity().getBaseContext()));
+        gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
 
         FetchMovieDataTask fetchData = new FetchMovieDataTask();
         fetchData.execute();
+
     }
 
     //User declared classes
     private class FetchMovieDataTask extends AsyncTask<Void, Void, Void>{
         //Constants and Global Variables
         private final String LOG_TAG = GridViewFragment.class.getSimpleName();
-
-        final String[] TITLE = new String[20];
-        final String[] RELEASE_DATE = new String[20];
-        final String[] OVERVIEW = new String[20];
-        final String[] IMAGE = new String[20];
-        final Float[] RATING = new Float[20];
 
         //Overrided methods
         @Override
@@ -154,7 +158,18 @@ public class GridViewFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            Log.v(LOG_TAG, "Exiting doInBackground");
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            Log.v(LOG_TAG, "Exicuting onPostExecute");
+            //Checks if the AsyncTask was completed successfully so that we can populate the Grid View
+            gridViewMovie.setAdapter(new GridViewAdapter(getActivity().getApplicationContext(), IMAGE));
         }
 
         //User defined methods

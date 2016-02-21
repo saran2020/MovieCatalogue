@@ -1,12 +1,14 @@
 package itsme.com.moviecatalogue;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -16,19 +18,21 @@ public class GridViewAdapter extends BaseAdapter {
 
     //Constants and Global variables
     private Context mContext;
-    private Integer[] imageResource = {
-            R.drawable.w185
-    };
+    private String[] imageResource;
+    private boolean flag = false;
+    private Integer[] image ={R.drawable.w185_2};
 
     //Constructor
-    public GridViewAdapter(Context context) {
+    public GridViewAdapter(Context context, String[] Image) {
         this.mContext = context;
+        this.imageResource = Image;
     }
 
     //OverridedMethods
     @Override
     public int getCount() {
-        return 15;
+        return imageResource.length;
+        //return 3;
     }
 
     @Override
@@ -57,10 +61,25 @@ public class GridViewAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
+
+        if(!flag)
+            updateResource();
+
+        Log.v("AdapterClass:",imageResource[position]);
+
+        Picasso.with(mContext).setLoggingEnabled(false);
         Picasso.with(mContext)
-                .load(imageResource[0])
+                .load(image[0])
                 .into(imageView);
 
         return imageView;
+    }
+
+    //User Defined Methods
+    private void updateResource() {
+        for(int i = 0; i < imageResource.length; i++){
+            imageResource[i] = "http://image.tmdb.org/t/p/w185/" + imageResource[i];
+        }
+        flag = true;
     }
 }
