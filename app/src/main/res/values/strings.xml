@@ -1,4 +1,22 @@
 <resources>
     <string name="app_name">Movie Catalogue</string>
     <string name="strSettings">Settings</string>
+
+    <!--Used for the list Prefrence Sort by-->
+    <string name="listPrefTitle">Sort by</string>
+    <string name="keyListPref" translatable="false">keySortBy</string>
+    <string name="sharedPrefTitle">Settings</string>
+
+    <string-array name="listPrefEntries">
+        <item>Popularity</item>
+        <item>Rating</item>
+    </string-array>
+
+    <string-array name="listPrefEntryValue">
+        <item>popularity</item>
+        <item>rating</item>
+    </string-array>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

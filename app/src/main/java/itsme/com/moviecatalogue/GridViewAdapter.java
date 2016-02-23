@@ -69,7 +69,7 @@ public class GridViewAdapter extends BaseAdapter {
 
         Picasso.with(mContext).setLoggingEnabled(false);
         Picasso.with(mContext)
-                .load(image[0])
+                .load(imageResource[position])
                 .into(imageView);
 
         return imageView;
