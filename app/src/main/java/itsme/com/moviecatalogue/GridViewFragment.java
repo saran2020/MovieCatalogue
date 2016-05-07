@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
@@ -39,15 +40,13 @@ import java.util.Locale;
  */
 public class GridViewFragment extends Fragment {
 
+    private static String SORT_BY_POPULARITY;
     //Constants & global variables
     private final String[] TITLE = new String[20];
     private final String[] RELEASE_DATE = new String[20];
     private final String[] OVERVIEW = new String[20];
     private final String[] IMAGE = new String[20];
     private final Float[] RATING = new Float[20];
-
-    private static String SORT_BY_POPULARITY;
-
     //Made it global so that this can be used to call adapter in post execute
     GridView gridViewMovie;
     ProgressBar pb;
@@ -222,6 +221,26 @@ public class GridViewFragment extends Fragment {
 
             //removes the progress bar since execution is done
             pb.setVisibility(View.GONE);
+
+            //On click listener for the grid view to start an activity.
+            gridViewMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    Intent detailViewIntent = new Intent(getActivity(), DetailActivity.class);
+
+                    //Filling the bundle with the data to be passed to the detail view
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Title", TITLE[position]);
+                    bundle.putString("Image", IMAGE[position]);
+                    bundle.putString("Release date", RELEASE_DATE[position]);
+                    bundle.putString("Overview", OVERVIEW[position]);
+                    bundle.putFloat("Rating", RATING[position]);
+
+                    detailViewIntent.putExtras(bundle);
+                    startActivity(detailViewIntent);
+                }
+            });
         }
 
         //User defined methods

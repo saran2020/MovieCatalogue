@@ -85,3 +85,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+.idea/codeStyleSettings.xml
+.idea/libraries/design_23_1_1.xml
+.idea/workspace.xml
+.idea/workspace.xml
+.idea/libraries/recyclerview_v7_23_1_1.xml
+.idea/workspace.xml
