@@ -64,9 +64,7 @@ public class GridViewFragment extends Fragment {
             , Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.grid_view_fragment, container, false);
-
         updateGridView(rootView);
-
         return rootView;
     }
 
