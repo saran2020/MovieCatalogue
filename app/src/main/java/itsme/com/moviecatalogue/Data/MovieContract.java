@@ -45,9 +45,13 @@ public class MovieContract {
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_RELEASE_DATE = "release_data";
         public static final String COLUMN_RATING = "rating";
-        public static final String COLUMN_GENER_IDS = "geners";
+        public static final String COLUMN_GENRE_IDS = "genres";
 
         public static Uri buildMovieUri(long id) {
+            return ContentUris.withAppendedId(FINAL_URI, id);
+        }
+
+        public static Uri buildGenre(int id) {
             return ContentUris.withAppendedId(FINAL_URI, id);
         }
     }
