@@ -42,28 +42,89 @@ public class MovieProvider extends ContentProvider {
         matcher.addURI(authority, MovieContract.PATH_MOVIE +
                 MovieContract.Movie.MATCHER_MOVIE_GENRE + "/#", MOVIE_WITH_GENRE);
         matcher.addURI(authority, MovieContract.PATH_MOVIE +
-                MovieContract.Movie.MATCHER_MOVIE_IS_FAV + "/#", MOVIE_FAVOURITE);
+                MovieContract.Movie.MATCHER_MOVIE_IS_FAV, MOVIE_FAVOURITE);
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
 
         return matcher;
-
     }
 
     @Override
     public boolean onCreate() {
+        mOpenHelper = new MovieDBHelper(getContext());
         return false;
     }
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+    public String getType(Uri uri) {
+
+        // Use the Uri Matcher to determine what kind of URI this is.
+        final int match = matcher.match(uri);
+
+        switch (match) {
+            case MOVIE_WITH_ID:
+                return MovieContract.Movie.CONTENT_ITEM_BASE_TYPE;
+            case MOVIE_WITH_GENRE:
+                return MovieContract.Movie.CONTENT_DIR_BASE_TYPE;
+            case MOVIE_FAVOURITE:
+                return MovieContract.Movie.CONTENT_DIR_BASE_TYPE;
+            case MOVIE:
+                return MovieContract.Movie.CONTENT_DIR_BASE_TYPE;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     @Nullable
     @Override
-    public String getType(Uri uri) {
-        return null;
+    public Cursor query(Uri uri, String[] projection,
+                        String selectionReceived, String[] selectionArgsReceived, String sortOrder) {
+        // Here's the switch statement that, given a URI, will determine what kind of request it is,
+        // and query the database accordingly.
+        Cursor retCursor;
+        switch (matcher.match(uri)) {
+            // "movie"
+            case MOVIE: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.Movie.TABLE_NAME,
+                        projection,
+                        selectionReceived,
+                        selectionArgsReceived,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+
+            case MOVIE_FAVOURITE: {
+                String[] selectionArgs = new String[]{"true"};
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.Movie.TABLE_NAME,
+                        projection,
+                        mBuildWithMovieFave,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+
+            case MOVIE_WITH_ID: {
+                String[] selectionArgs = new String[]{"true"};
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.Movie.TABLE_NAME,
+                        projection,
+                        mBuildWithMovieFave,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+        }
     }
 
     @Nullable
