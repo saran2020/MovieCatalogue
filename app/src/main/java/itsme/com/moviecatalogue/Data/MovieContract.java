@@ -45,7 +45,14 @@ public class MovieContract {
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_RELEASE_DATE = "release_data";
         public static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_POPULARITY = "popularity";
         public static final String COLUMN_GENRE_IDS = "genres";
+        public static final String COLUMN_IS_FAVOURITE = "is_favourite";
+
+        //Constants for the URI matcher.
+        public static final String MATCHER_MOVIE_ID = "/movie";
+        public static final String MATCHER_MOVIE_GENRE = "/genre";
+        public static final String MATCHER_MOVIE_IS_FAV = "/fav";
 
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(FINAL_URI, id);
