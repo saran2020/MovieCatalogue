@@ -114,7 +114,7 @@ public class MovieProvider extends ContentProvider {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.Movie.TABLE_NAME,
                         projection,
-                        mBuildWithMovieFave,
+                        mBuildWithMovieID,
                         selectionArgs,
                         null,
                         null,
@@ -151,7 +151,7 @@ public class MovieProvider extends ContentProvider {
         //Check if the row has been updated and return the Uri to the data inserted.
         // If not updated properly throw and exception.
         if (rowId > 0) {
-            returnUri = MovieContract.Movie.buildMovieUri(rowId)
+            returnUri = MovieContract.Movie.buildMovieUri(rowId);
         } else {
             throw new UnsupportedOperationException("Unknown Uri " + uri);
         }

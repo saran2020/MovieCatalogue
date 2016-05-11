@@ -2,13 +2,12 @@ package itsme.com.moviecatalogue;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -19,7 +18,7 @@ public class GridViewAdapter extends BaseAdapter {
     //Constants and Global variables
     private Context mContext;
     private String[] imageResource;
-    private boolean flag = false;
+    private boolean SHOULD_UPDATE_RESOURCE = false;
     private Integer[] image ={R.drawable.w185_2};
 
     //Constructor
@@ -46,23 +45,22 @@ public class GridViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView
-            , ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        //getting the layout inflater for inflating the layout.
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+                mContext.LAYOUT_INFLATER_SERVICE);
         ImageView imageView;
 
         if (convertView == null) {
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView
-                    .LayoutParams(GridView.LayoutParams.MATCH_PARENT
-                    , GridView.LayoutParams.MATCH_PARENT));
-
-            //Cropping the image to fit the screen so that there is no gap in the GridView between two cols.
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //This helps us in inflating the gridview with many imageViews.
+            imageView = (ImageView) inflater.inflate(R.layout.grid_item_view, null);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        if(!flag)
+        //This methods create a string array full of url for the images to be populated.
+        if (!SHOULD_UPDATE_RESOURCE)
             updateResource();
 
         Log.v("AdapterClass:",imageResource[position]);
@@ -80,6 +78,6 @@ public class GridViewAdapter extends BaseAdapter {
         for(int i = 0; i < imageResource.length; i++){
             imageResource[i] = "http://image.tmdb.org/t/p/w185/" + imageResource[i];
         }
-        flag = true;
+        SHOULD_UPDATE_RESOURCE = true;
     }
 }
