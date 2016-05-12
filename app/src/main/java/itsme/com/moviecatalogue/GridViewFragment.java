@@ -1,9 +1,8 @@
 package itsme.com.moviecatalogue;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,22 +19,16 @@ import android.widget.ProgressBar;
  */
 public class GridViewFragment extends Fragment {
 
-    private static String SORT_BY_POPULARITY;
-    //Constants & global variables
-    private final String[] TITLE = new String[20];
-    private final String[] RELEASE_DATE = new String[20];
-    private final String[] OVERVIEW = new String[20];
-    private final String[] IMAGE = new String[20];
-    private final Float[] RATING = new Float[20];
-    //Made it global so that this can be used to call adapter in post execute
-    GridView gridViewMovie;
-    ProgressBar pb;
+    Context mContext;
+
+    public GridViewFragment() {
+        this.mContext = getActivity();
+    }
 
     //Overrided methods
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SORT_BY_POPULARITY = getResources().getStringArray(R.array.listPrefEntryValue)[0];
         setHasOptionsMenu(true);
     }
 
@@ -76,21 +69,14 @@ public class GridViewFragment extends Fragment {
     //User declared methods
     private void updateGridView(View rootView) {
 
-        pb = (ProgressBar) rootView.findViewById(R.id.pb1);
+        ProgressBar pb = (ProgressBar) rootView.findViewById(R.id.pb1);
         pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
 
         //Getting data from shared preference
-        String sortBy = getSortingData();
+        String sortBy = Utility.getPrefferedSorting(mContext);
 
         //Updating the gridView so that it can be used in PostExecute to update the UI
-        gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
+        GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
         gridViewMovie.setVisibility(View.GONE);
-    }
-
-    public String getSortingData() {
-        SharedPreferences sp = PreferenceManager
-                .getDefaultSharedPreferences(getActivity().getBaseContext());
-
-        return sp.getString(getString(R.string.keyListPref), SORT_BY_POPULARITY);
     }
 }

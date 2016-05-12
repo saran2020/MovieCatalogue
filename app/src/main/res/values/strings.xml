@@ -12,10 +12,15 @@
         <item>Rating</item>
     </string-array>
 
+    <!--List preference related data-->
+    <string name="list_pref_popularity">popularity</string>
+    <string name="list_pref_rating">rating</string>
     <string-array name="listPrefEntryValue">
-        <item>popularity</item>
-        <item>rating</item>
+        <item>@string/list_pref_popularity</item>
+        <item>@string/list_pref_rating</item>
     </string-array>
+    <string name="list_pref_default">@string/list_pref_default</string>
+
     <string name="title_activity_detail">DetailActivity</string>
     <string name="action_settings">Settings</string>
     <string name="moviePlot">Twenty-two years after the events of Jurassic Park, Isla Nublar now features a fully functioning dinosaur theme park, Jurassic World, as originally envisioned by John Hammond.</string>
