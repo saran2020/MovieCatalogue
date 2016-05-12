@@ -23,15 +23,15 @@ public class MovieDBHelper extends SQLiteOpenHelper {
         // Movie id, title, image, overview, release_date, rating, type, genre ids.
         final String CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieContract.Movie.TABLE_NAME + " (" +
                 MovieContract.Movie._ID + " INTEGER PRIMARY KEY," +
-                MovieContract.Movie.COLUMN_MOVIE_ID + " REAL" +
+                MovieContract.Movie.COLUMN_MOVIE_ID + " INTEGER NOT NULL" +
                 MovieContract.Movie.COLUMN_TITLE + " TEXT NOT NULL, " +
-                MovieContract.Movie.COLUMN_IMAGE + " BLOB NOT NULL, " +
+                MovieContract.Movie.COLUMN_POSTER + " BLOB NOT NULL, " +
                 MovieContract.Movie.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 MovieContract.Movie.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 MovieContract.Movie.COLUMN_RATING + " REAL NOT NULL, " +
                 MovieContract.Movie.COLUMN_POPULARITY + " REAL NOT NULL, " +
                 MovieContract.Movie.COLUMN_GENRE_IDS + " TEXT NOT NULL " +
-                MovieContract.Movie.COLUMN_IS_FAVOURITE + "NUMERIC NOT NULL" +
+                MovieContract.Movie.COLUMN_IS_FAVOURITE + "INTEGER NOT NULL" +
                 " );";
 
         db.execSQL(CREATE_MOVIE_TABLE);

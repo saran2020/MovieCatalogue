@@ -25,7 +25,7 @@ public class MovieContract {
     //Actual contract for our Movie Database
     public static final class Movie implements BaseColumns {
 
-        public static final Uri FINAL_URI =
+        public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIE).build();
 
         //This DIR type is for a particular gener type filter.
@@ -41,7 +41,7 @@ public class MovieContract {
         //Columns for the table
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_IMAGE = "image";
+        public static final String COLUMN_POSTER = "image";
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_RELEASE_DATE = "release_data";
         public static final String COLUMN_RATING = "rating";
@@ -49,17 +49,21 @@ public class MovieContract {
         public static final String COLUMN_GENRE_IDS = "genres";
         public static final String COLUMN_IS_FAVOURITE = "is_favourite";
 
+        //Constants for is Favourite
+        public static final int IS_FAVOURITE_FALSE = 0;
+        public static final int IS_FAVOURITE_TRUE = 1;
+
         //Constants for the URI matcher.
         public static final String MATCHER_MOVIE_ID = "/movie";
         public static final String MATCHER_MOVIE_GENRE = "/genre";
         public static final String MATCHER_MOVIE_IS_FAV = "/fav";
 
         public static Uri buildMovieUri(long id) {
-            return ContentUris.withAppendedId(FINAL_URI, id);
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
         public static Uri buildGenre(int id) {
-            return ContentUris.withAppendedId(FINAL_URI, id);
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 }

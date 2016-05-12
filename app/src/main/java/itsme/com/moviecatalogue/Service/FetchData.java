@@ -1,6 +1,7 @@
 package itsme.com.moviecatalogue.Service;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -18,10 +19,13 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Vector;
 
 import itsme.com.moviecatalogue.BuildConfig;
+import itsme.com.moviecatalogue.Data.MovieContract;
 
 /**
  * Created by its me on 13-May-16.
@@ -129,11 +133,16 @@ public class FetchData extends IntentService {
         final String JSON_OVERVIEW = "overview";
         final String JSON_IMAGE = "poster_path";
         final String JSON_RATING = "vote_average";
+        final String JSON_MOVIE_ID = "id";
+        final String JSON_GENRE_IDS = "genre_ids";
+        final String JSON_POPULARITY = "popularity";
 
         //Getting a JSON object for the complete String
         JSONObject movieDetailJson = new JSONObject(jsonString);
         //Getting a array of 20 movies from the Json
         JSONArray movieArray = movieDetailJson.getJSONArray(JSON_RESULT);
+
+        Vector<ContentValues> cvVector = new Vector<>(movieArray.length());
 
         for (int pos = 0; pos < movieArray.length(); pos++) {
             String title;
@@ -141,6 +150,9 @@ public class FetchData extends IntentService {
             String overView;
             String poster;
             String rating;
+            String movie_id;
+            String genres = null;
+            String popularity;
 
             //Get single movie from a array of 20 movies
             JSONObject movie = movieArray.getJSONObject(pos);
@@ -151,33 +163,62 @@ public class FetchData extends IntentService {
             overView = movie.getString(JSON_OVERVIEW);
             poster = movie.getString(JSON_IMAGE);
             rating = movie.getString(JSON_RATING);
+            movie_id = movie.getString(JSON_MOVIE_ID);
+            popularity = movie.getString(JSON_POPULARITY);
 
-            updateToArray(pos, title, releaseDate, overView, poster, rating);
+            //Getting the Json array for the move genre
+            // and making a string of the array to update into the Db
+            JSONArray genre = movie.getJSONArray(JSON_GENRE_IDS);
+            if (genre != null) {
+                int genre_ids[] = new int[genre.length()];
+
+                for (int i = 0; i < genre.length(); i++) {
+                    genre_ids[i] = genre.getInt(i);
+                }
+                genres = Arrays.toString(genre_ids);
+            }
+
+            //Getting date from Year-Month-Date format
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date date = null;
+            try {
+                date = format.parse(releaseDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            //Changing date to Date-Month-Year format
+            format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+
+            //Declaring a content value a building an array of content values.
+            ContentValues values = new ContentValues();
+
+            values.put(MovieContract.Movie.COLUMN_TITLE, title);
+            values.put(MovieContract.Movie.COLUMN_RELEASE_DATE, format.format(date));
+            values.put(MovieContract.Movie.COLUMN_OVERVIEW, overView);
+            values.put(MovieContract.Movie.COLUMN_POSTER, poster);
+            values.put(MovieContract.Movie.COLUMN_RATING, Float.valueOf(rating));
+            values.put(MovieContract.Movie.COLUMN_MOVIE_ID, movie_id);
+            values.put(MovieContract.Movie.COLUMN_POPULARITY, popularity);
+            values.put(MovieContract.Movie.COLUMN_IS_FAVOURITE,
+                    MovieContract.Movie.IS_FAVOURITE_FALSE);    //We have to set favourite to false when getting the data from cloud.
+
+            if (genres != null)
+                values.put(MovieContract.Movie.COLUMN_GENRE_IDS, genres);
+
+            cvVector.add(values);
         }
+
+        int inserted = 0;
+        if (cvVector.size() > 0) {
+            ContentValues[] contentValues = new ContentValues[cvVector.size()];
+            cvVector.toArray(contentValues);
+            inserted = this.getContentResolver().bulkInsert(MovieContract.Movie.CONTENT_URI, contentValues);
+        }
+
+        Log.v(LOG_TAG, "No of rows inserted: " + inserted);
 
         //Exiting the method after populating the array
         return;
-    }
-
-    private void updateToArray(Integer pos, String title, String releaseDate
-            , String overView, String poster, String rating) {
-
-        //Getting date from Year-Month-Date format
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        Date date = null;
-        try {
-            date = format.parse(releaseDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        //Changing date to Date-Month-Year format
-        format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-
-        TITLE[pos] = title;
-        RELEASE_DATE[pos] = format.format(date);
-        OVERVIEW[pos] = overView;
-        IMAGE[pos] = poster;
-        RATING[pos] = Float.valueOf(rating);
     }
 }
