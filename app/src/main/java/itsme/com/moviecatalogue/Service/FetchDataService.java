@@ -26,15 +26,26 @@ import java.util.Vector;
 
 import itsme.com.moviecatalogue.BuildConfig;
 import itsme.com.moviecatalogue.Data.MovieContract;
+import itsme.com.moviecatalogue.Utility;
 
 /**
  * Created by its me on 13-May-16.
  */
-public class FetchData extends IntentService {
+public class FetchDataService extends IntentService {
 
     //User declared classes
     //Constants and Global Variables
-    private final String LOG_TAG = FetchData.class.getSimpleName();
+    private static final String LOG_TAG = FetchDataService.class.getSimpleName();
+    private static final String WORKER_THREAD_NAME = "FetchData";
+
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     *
+     * @param name Used to name the worker thread, important only for debugging.
+     */
+    public FetchDataService(String name) {
+        super(WORKER_THREAD_NAME);
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -115,6 +126,8 @@ public class FetchData extends IntentService {
             formatJsonString(jsonString);
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -122,7 +135,7 @@ public class FetchData extends IntentService {
 
     //User defined methods
     private void formatJsonString(String jsonString)
-            throws JSONException {
+            throws JSONException, IOException {
 
         //Required for formatting
         final String JSON_RESULT = "results";
@@ -148,7 +161,7 @@ public class FetchData extends IntentService {
             String title;
             String releaseDate;
             String overView;
-            String poster;
+            String poster_path;
             String rating;
             String movie_id;
             String genres = null;
@@ -161,7 +174,7 @@ public class FetchData extends IntentService {
             title = movie.getString(JSON_TITLE);
             releaseDate = movie.getString(JSON_RELEASE_DATE);
             overView = movie.getString(JSON_OVERVIEW);
-            poster = movie.getString(JSON_IMAGE);
+            poster_path = movie.getString(JSON_IMAGE);
             rating = movie.getString(JSON_RATING);
             movie_id = movie.getString(JSON_MOVIE_ID);
             popularity = movie.getString(JSON_POPULARITY);
@@ -196,10 +209,11 @@ public class FetchData extends IntentService {
             values.put(MovieContract.Movie.COLUMN_TITLE, title);
             values.put(MovieContract.Movie.COLUMN_RELEASE_DATE, format.format(date));
             values.put(MovieContract.Movie.COLUMN_OVERVIEW, overView);
-            values.put(MovieContract.Movie.COLUMN_POSTER, poster);
+            values.put(MovieContract.Movie.COLUMN_POSTER_PATH, poster_path);
             values.put(MovieContract.Movie.COLUMN_RATING, Float.valueOf(rating));
             values.put(MovieContract.Movie.COLUMN_MOVIE_ID, movie_id);
             values.put(MovieContract.Movie.COLUMN_POPULARITY, popularity);
+            values.put(MovieContract.Movie.COLUMN_POSTER, Utility.getByteFromImage(poster_path));
             values.put(MovieContract.Movie.COLUMN_IS_FAVOURITE,
                     MovieContract.Movie.IS_FAVOURITE_FALSE);    //We have to set favourite to false when getting the data from cloud.
 

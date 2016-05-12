@@ -48,6 +48,7 @@ public class MovieContract {
         public static final String COLUMN_POPULARITY = "popularity";
         public static final String COLUMN_GENRE_IDS = "genres";
         public static final String COLUMN_IS_FAVOURITE = "is_favourite";
+        public static final String COLUMN_POSTER_PATH = "poster_path";
 
         //Constants for is Favourite
         public static final int IS_FAVOURITE_FALSE = 0;
