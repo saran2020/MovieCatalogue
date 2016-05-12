@@ -49,12 +49,12 @@ public class GridViewAdapter extends BaseAdapter {
 
         //getting the layout inflater for inflating the layout.
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
-                mContext.LAYOUT_INFLATER_SERVICE);
+                Context.LAYOUT_INFLATER_SERVICE);
         ImageView imageView;
 
         if (convertView == null) {
             //This helps us in inflating the gridview with many imageViews.
-            imageView = (ImageView) inflater.inflate(R.layout.grid_item_view, null);
+            imageView = (ImageView) inflater.inflate(R.layout.grid_view_item, null);
         } else {
             imageView = (ImageView) convertView;
         }

@@ -5,11 +5,12 @@
 
     <GridView
         android:id="@+id/gridview_movie_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:numColumns="2"
-        android:columnWidth="185px"/>
+        android:numColumns="auto_fit"
+        android:columnWidth="185dp"
+        android:stretchMode="columnWidth" />
 
     <ProgressBar
         android:id="@+id/pb1"
