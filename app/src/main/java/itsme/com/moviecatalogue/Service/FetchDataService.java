@@ -1,7 +1,9 @@
 package itsme.com.moviecatalogue.Service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -26,6 +28,7 @@ import java.util.Vector;
 
 import itsme.com.moviecatalogue.BuildConfig;
 import itsme.com.moviecatalogue.Data.MovieContract;
+import itsme.com.moviecatalogue.GridViewFragment;
 import itsme.com.moviecatalogue.R;
 import itsme.com.moviecatalogue.Utility;
 
@@ -66,7 +69,11 @@ public class FetchDataService extends IntentService {
             final String APP_ID = "api_key";
 
             Uri uri;
-            String sortingOrder = Utility.getPrefferedSorting(getApplicationContext());
+
+            //If there is no sorting order we don't know which data to get hence return.
+            if (!(intent.hasExtra(GridViewFragment.SORT_ORDER)))
+                return;
+            String sortingOrder = intent.getStringExtra(GridViewFragment.SORT_ORDER);
             if (sortingOrder.matches(getString(R.string.list_pref_popularity))) {
                 uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(SORT, POPULARITY)
                         .appendQueryParameter(APP_ID, BuildConfig.THE_MOVIE_DB_API_KEY)
@@ -234,7 +241,17 @@ public class FetchDataService extends IntentService {
 
         Log.v(LOG_TAG, "No of rows inserted: " + inserted);
 
-        //Exiting the method after populating the array
         return;
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v("Service class: ", "Service running properly......Hurry");
+            Intent sendIntent = new Intent(context, FetchDataService.class);
+            sendIntent.putExtra(GridViewFragment.SORT_ORDER, intent.getStringExtra(GridViewFragment.SORT_ORDER));
+            context.startService(sendIntent);
+        }
     }
 }

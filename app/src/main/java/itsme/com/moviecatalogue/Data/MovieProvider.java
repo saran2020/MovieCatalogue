@@ -98,8 +98,9 @@ public class MovieProvider extends ContentProvider {
         // Here's the switch statement that, given a URI, will determine what kind of request it is,
         // and query the database accordingly.
         Cursor retCursor;
+
         switch (matcher.match(uri)) {
-            // "movie"
+            // "/movie"
             case MOVIE: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.Movie.TABLE_NAME,
@@ -113,6 +114,7 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
 
+            //"/fav"
             case MOVIE_FAVOURITE: {
                 String[] selectionArgs = new String[]{"true"};
                 retCursor = mOpenHelper.getReadableDatabase().query(
@@ -127,8 +129,9 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
 
+            //"/movie/<id>"
             case MOVIE_WITH_ID: {
-                String[] selectionArgs = new String[]{"true"};
+                String[] selectionArgs = new String[]{MovieContract.Movie.getIdFromUri(uri)};
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.Movie.TABLE_NAME,
                         projection,
@@ -141,8 +144,9 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
 
+            //"/genre/<genre_id>"
             case MOVIE_WITH_GENRE: {
-                //Todo:BAsed on the way data is getting stored into the db.
+                //Todo:Based on the way data is getting stored into the db.
                 // Create a query which gets data ffor a particular genre.
 
             }
@@ -180,6 +184,7 @@ public class MovieProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
 
+        //Todo: make content provider delete data
         // this makes delete all rows return the number of rows deleted.
         if (selection == null) selection = "1";
         int rowsDeleted = mOpenHelper.getWritableDatabase().delete(

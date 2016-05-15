@@ -1,5 +1,7 @@
 package itsme.com.moviecatalogue;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
+import itsme.com.moviecatalogue.Service.FetchDataService;
+
 /**
  * Created by its me on 17-Feb-16.
  * The data what we get from the cloud is only for 20 movies
@@ -20,6 +24,7 @@ import android.widget.ProgressBar;
 public class GridViewFragment extends Fragment {
 
     Context mContext;
+    public static final String SORT_ORDER = "SORT_EXTRA";
 
     public GridViewFragment() {
         this.mContext = getActivity();
@@ -76,6 +81,15 @@ public class GridViewFragment extends Fragment {
         GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
         gridViewMovie.setVisibility(View.GONE);
 
-        //TODO: Add a call to the Service for fetching data.
+        Intent serviceIntent = new Intent(getActivity(), FetchDataService.class);
+        serviceIntent.putExtra(SORT_ORDER, Utility.getPrefferedSorting(getActivity()));
+
+        //Wrap in a pending intent which only fires once.
+        PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0, serviceIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        //Set the AlarmManager to wake up the system.
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
     }
 }
