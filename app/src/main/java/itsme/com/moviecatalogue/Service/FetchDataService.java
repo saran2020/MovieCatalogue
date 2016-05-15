@@ -26,6 +26,7 @@ import java.util.Vector;
 
 import itsme.com.moviecatalogue.BuildConfig;
 import itsme.com.moviecatalogue.Data.MovieContract;
+import itsme.com.moviecatalogue.R;
 import itsme.com.moviecatalogue.Utility;
 
 /**
@@ -65,7 +66,8 @@ public class FetchDataService extends IntentService {
             final String APP_ID = "api_key";
 
             Uri uri;
-            if (params[0].matches(SORT_BY_POPULARITY)) {
+            String sortingOrder = Utility.getPrefferedSorting(getApplicationContext());
+            if (sortingOrder.matches(getString(R.string.list_pref_popularity))) {
                 uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(SORT, POPULARITY)
                         .appendQueryParameter(APP_ID, BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();
@@ -90,7 +92,7 @@ public class FetchDataService extends IntentService {
             InputStream inputStream = URLConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
             if (inputStream == null) {
-                return null;
+                return;
             }
 
             reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -101,11 +103,11 @@ public class FetchDataService extends IntentService {
                 buffer.append(line + "/n");
 
             if (buffer.length() == 0)
-                return null;
+                return;
 
             jsonString = buffer.toString();
 
-            Log.v(LOG_TAG, "JSONSTring" + jsonString);
+            Log.v(LOG_TAG, "JSONString" + jsonString);
         } catch (IOException e) {
             Log.e("FetchMovieDataTask", "ERROR" + e.toString());
         } finally {
@@ -130,7 +132,7 @@ public class FetchDataService extends IntentService {
             e.printStackTrace();
         }
 
-        return null;
+        return;
     }
 
     //User defined methods

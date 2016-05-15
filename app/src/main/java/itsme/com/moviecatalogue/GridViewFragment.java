@@ -72,11 +72,10 @@ public class GridViewFragment extends Fragment {
         ProgressBar pb = (ProgressBar) rootView.findViewById(R.id.pb1);
         pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
 
-        //Getting data from shared preference
-        String sortBy = Utility.getPrefferedSorting(mContext);
-
         //Updating the gridView so that it can be used in PostExecute to update the UI
         GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
         gridViewMovie.setVisibility(View.GONE);
+
+        //TODO: Add a call to the Service for fetching data.
     }
 }

@@ -7,22 +7,40 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by its me on 11-May-16.
  */
 public class MovieProvider extends ContentProvider {
 
+    private static UriMatcher matcher = buildUriMatcher();
+    private MovieDBHelper mOpenHelper;
+
     //Constants used in the URI matcher.
     static final int MOVIE = 100;
     static final int MOVIE_WITH_GENRE = 101;
     static final int MOVIE_WITH_ID = 102;
     static final int MOVIE_FAVOURITE = 104;
+
     private static final String mBuildWithMovieID = MovieContract.Movie.COLUMN_MOVIE_ID + " = ? ";
     private static final String mBuildWithMovieGenre = MovieContract.Movie.COLUMN_GENRE_IDS + " = ? ";
     private static final String mBuildWithMovieFave = MovieContract.Movie.COLUMN_IS_FAVOURITE + " = ?";
-    private static UriMatcher matcher = buildUriMatcher();
-    private MovieDBHelper mOpenHelper;
+    // The coloums to be fetched for the movie.
+    // To be used in bulk insert to compare the data before updating the database.
+    private final static String MOVIE_COLUMN[] = {
+            MovieContract.Movie._ID,
+            MovieContract.Movie.COLUMN_MOVIE_ID,
+            MovieContract.Movie.COLUMN_RATING,
+            MovieContract.Movie.COLUMN_POPULARITY
+    };
+
+    // These indices are tied to MOVIE_COLUMN. If FORECAST_COLUMNS changes, these
+    // must change.
+    static final int ID = 0;
+    static final int COLUMN_MOVIE_ID = 1;
+    static final int COLUMN_RATING = 2;
+    static final int COLUMN_POPULARITY = 3;
 
     private static UriMatcher buildUriMatcher() {
         // I know what you're thinking.  Why create a UriMatcher when you can use regular
@@ -195,23 +213,102 @@ public class MovieProvider extends ContentProvider {
         return rowsUpdated;
     }
 
+    /**
+     * Gets all the data from the Database. And then before inserting it
+     * checks if the movie is already preset. If the movie is not present
+     * then it will update it into the database with all the details of
+     * the movie. If movie is already presented it will only change few
+     * fields which are subject to change.
+     *
+     * @param uri    URI of the table that needs to be updated.
+     * @param values A content value array that consist of all the details
+     *               that needs to be updated
+     * @return It returns the number of rows that has been updated.
+     */
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int rowsInserted = 0;
+        int rowsUpdated = 0;
         db.beginTransaction();
-        try {
-            for (ContentValues value : values) {
-                long id = db.insert(MovieContract.Movie.TABLE_NAME,
-                        null,
-                        value);
-                if (id != -1) {
-                    rowsInserted++;
+
+        // Gets the all the database rows to check which row needs to be updated.
+        Cursor cursor = db.query(MovieContract.Movie.TABLE_NAME,
+                MOVIE_COLUMN,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        // If we get the data from cursor means that database has already been initiated.
+        // If not we have to initiate the database.
+        //
+        // If we are able to fetch any data.
+        if (cursor.moveToFirst()) {
+            try {
+                for (ContentValues value : values) {
+
+                    //We move cursor to point to next row in a do while loop.
+                    do {
+                        String cursorMovieID = Integer.toString(cursor.getInt(COLUMN_MOVIE_ID));
+                        String[] whereArgs = {
+                                value.getAsString(MovieContract.Movie.COLUMN_MOVIE_ID)
+                        };
+
+                        //Check if the movie_id from cursor matches the data fetched from cloud.
+                        if (cursorMovieID.equalsIgnoreCase(whereArgs[0])) {
+
+                            String whereClause = MovieContract.Movie.COLUMN_MOVIE_ID + " =? ";
+                            //Remove all unnecessary content values so that we can update only what are subject to change.
+                            value.remove(MovieContract.Movie.COLUMN_POSTER);
+                            value.remove(MovieContract.Movie.COLUMN_GENRE_IDS);
+                            value.remove(MovieContract.Movie.COLUMN_POSTER_PATH);
+                            value.remove(MovieContract.Movie.COLUMN_IS_FAVOURITE);
+                            value.remove(MovieContract.Movie.COLUMN_OVERVIEW);
+                            value.remove(MovieContract.Movie.COLUMN_TITLE);
+                            value.remove(MovieContract.Movie.COLUMN_RELEASE_DATE);
+
+                            //Update the database and if done increase the rows updated by 1.
+                            long id = db.update(MovieContract.Movie.TABLE_NAME,
+                                    value,
+                                    whereClause,
+                                    whereArgs);
+
+                            if (id != -1) {
+                                rowsUpdated++;
+                            }
+                            //If the movie id dont match then update all the values of new movie
+                        } else {
+                            long id = db.insert(MovieContract.Movie.TABLE_NAME,
+                                    null,
+                                    value);
+                            if (id != -1) {
+                                rowsInserted++;
+                            }
+                        }
+                    } while (cursor.moveToNext());
                 }
+            } finally {
+                db.endTransaction();
             }
-        } finally {
-            db.endTransaction();
+            // If the cursor is empty directly update the database.
+        } else {
+            Log.v("Content Provider: ", "fetching data failed");
+            try {
+                for (ContentValues value : values) {
+                    long id = db.insert(MovieContract.Movie.TABLE_NAME,
+                            null,
+                            value);
+                    if (id != -1) {
+                        rowsInserted++;
+                    }
+                }
+            } finally {
+                db.endTransaction();
+            }
         }
+
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsInserted;
     }
