@@ -71,9 +71,9 @@ public class FetchDataService extends IntentService {
             Uri uri;
 
             //If there is no sorting order we don't know which data to get hence return.
-            if (!(intent.hasExtra(GridViewFragment.SORT_ORDER)))
+            if (!(intent.hasExtra(GridViewFragment.EXTRA_SORT_ORDER)))
                 return;
-            String sortingOrder = intent.getStringExtra(GridViewFragment.SORT_ORDER);
+            String sortingOrder = intent.getStringExtra(GridViewFragment.EXTRA_SORT_ORDER);
             if (sortingOrder.matches(getString(R.string.list_pref_popularity))) {
                 uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(SORT, POPULARITY)
                         .appendQueryParameter(APP_ID, BuildConfig.THE_MOVIE_DB_API_KEY)
@@ -250,7 +250,7 @@ public class FetchDataService extends IntentService {
         public void onReceive(Context context, Intent intent) {
             Log.v("Service class: ", "Service running properly......Hurry");
             Intent sendIntent = new Intent(context, FetchDataService.class);
-            sendIntent.putExtra(GridViewFragment.SORT_ORDER, intent.getStringExtra(GridViewFragment.SORT_ORDER));
+            sendIntent.putExtra(GridViewFragment.EXTRA_SORT_ORDER, intent.getStringExtra(GridViewFragment.EXTRA_SORT_ORDER));
             context.startService(sendIntent);
         }
     }

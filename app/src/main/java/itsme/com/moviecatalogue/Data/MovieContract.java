@@ -1,7 +1,6 @@
 package itsme.com.moviecatalogue.Data;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -54,20 +53,33 @@ public class MovieContract {
         public static final int IS_FAVOURITE_TRUE = 1;
 
         //Constants for the URI matcher.
-        public static final String MATCHER_MOVIE_ID = "/movie";
-        public static final String MATCHER_MOVIE_GENRE = "/genre";
-        public static final String MATCHER_MOVIE_IS_FAV = "/fav";
+        public static final String BUILDER_MOVIE_ID = "movie";
+        public static final String BUILDER_MOVIE_IS_FAV = "fav";
+        public static final String BUILDER_MOVIE_GENRE = "genre";
+
+        //Constants for the URI matcher.
+        public static final String MATCHER_MOVIE_ID = "/" + BUILDER_MOVIE_ID;
+        public static final String MATCHER_MOVIE_IS_FAV = "/" + BUILDER_MOVIE_IS_FAV;
+        public static final String MATCHER_MOVIE_GENRE = "/" + BUILDER_MOVIE_GENRE;
 
         public static Uri buildMovieUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return CONTENT_URI.buildUpon().
+                    appendPath(BUILDER_MOVIE_ID).
+                    appendPath(Long.toString(id)).build();
         }
 
         public static Uri buildGenre(int id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+            return CONTENT_URI.buildUpon().
+                    appendPath(BUILDER_MOVIE_GENRE).
+                    appendPath(Integer.toString(id)).build();
         }
 
         public static String getIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
+        }
+
+        public static Uri buildMovieDbUri() {
+            return CONTENT_URI;
         }
     }
 }
