@@ -10,10 +10,41 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import itsme.com.moviecatalogue.Data.MovieContract;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment {
+
+    //Projections for the cursor Loader
+    public static final String[] MOVIE_PROJECTION = {
+            MovieContract.Movie._ID,
+            MovieContract.Movie.COLUMN_MOVIE_ID,
+            MovieContract.Movie.COLUMN_TITLE,
+            MovieContract.Movie.COLUMN_POSTER_PATH,
+            MovieContract.Movie.COLUMN_POSTER,
+            MovieContract.Movie.COLUMN_OVERVIEW,
+            MovieContract.Movie.COLUMN_RELEASE_DATE,
+            MovieContract.Movie.COLUMN_RATING,
+            MovieContract.Movie.COLUMN_POPULARITY,
+            MovieContract.Movie.COLUMN_GENRE_IDS,
+            MovieContract.Movie.COLUMN_IS_FAVOURITE
+    };
+
+    //Column nos for the projections
+    public static final int PROJ_ID = 0;
+    public static final int PROJ_MOVIE_ID = 1;
+    public static final int PROJ_TITLE = 2;
+    public static final int PROJ_POSTER_PATH = 3;
+    public static final int PROJ_POSTER = 4;
+    public static final int PROJ_OVERVIEW = 5;
+    public static final int PROJ_RELEASE_DATE = 6;
+    public static final int PROJ_RATING = 7;
+    public static final int PROJ_POPULARITY = 8;
+    public static final int PROJ_GENER_IDS = 9;
+    public static final int PROJ_IS_FAV = 10;
+
 
     //Constants and global variables
     private String TITLE;

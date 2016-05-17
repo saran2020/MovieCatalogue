@@ -48,4 +48,8 @@ public class Utility {
         URL imageUrl = new URL(url);
         return BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
     }
+
+    public static Bitmap getImage(byte[] imageArray) {
+        return BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length);
+    }
 }

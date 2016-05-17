@@ -30,6 +30,7 @@ import itsme.com.moviecatalogue.Service.FetchDataService;
 public class GridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     Context mContext;
+    GridViewAdapter mAdapter;
     public static final String EXTRA_SORT_ORDER = "SORT_EXTRA";
     public static final int GRID_VIEW_LIMIT = 20;
 
@@ -37,11 +38,7 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
     public static final String[] MOVIE_PROJECTION = {
             MovieContract.Movie._ID,
             MovieContract.Movie.COLUMN_MOVIE_ID,
-            MovieContract.Movie.COLUMN_TITLE,
-            MovieContract.Movie.COLUMN_POSTER_PATH,
             MovieContract.Movie.COLUMN_POSTER,
-            MovieContract.Movie.COLUMN_OVERVIEW,
-            MovieContract.Movie.COLUMN_RELEASE_DATE,
             MovieContract.Movie.COLUMN_RATING,
             MovieContract.Movie.COLUMN_POPULARITY,
             MovieContract.Movie.COLUMN_GENRE_IDS,
@@ -51,15 +48,11 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
     //Column nos for the projections
     public static final int PROJ_ID = 0;
     public static final int PROJ_MOVIE_ID = 1;
-    public static final int PROJ_TITLE = 2;
-    public static final int PROJ_POSTER_PATH = 3;
-    public static final int PROJ_POSTER = 4;
-    public static final int PROJ_OVERVIEW = 5;
-    public static final int PROJ_RELEASE_DATE = 6;
-    public static final int PROJ_RATING = 7;
-    public static final int PROJ_POPULARITY = 8;
-    public static final int PROJ_GENER_IDS = 9;
-    public static final int PROJ_IS_FAV = 10;
+    public static final int PROJ_POSTER = 2;
+    public static final int PROJ_RATING = 3;
+    public static final int PROJ_POPULARITY = 4;
+    public static final int PROJ_GENER_IDS = 5;
+    public static final int PROJ_IS_FAV = 6;
 
 
     public GridViewFragment() {
@@ -115,7 +108,8 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 
         //Updating the gridView so that it can be used in PostExecute to update the UI
         GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
-        gridViewMovie.setVisibility(View.GONE);
+        gridViewMovie.setAdapter(mAdapter);
+
 
         Intent serviceIntent = new Intent(mContext, FetchDataService.class);
         serviceIntent.putExtra(EXTRA_SORT_ORDER, Utility.getPrefferedSorting(mContext));
@@ -160,11 +154,11 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mAdapter.swapCursor(null);
     }
 }
