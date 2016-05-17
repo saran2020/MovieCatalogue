@@ -10,22 +10,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SharedPrefrenceActivity"
-            android:label="@string/sharedPrefTitle"
-            android:parentActivityName=".FirstActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FirstActivity" />
-        </activity>
+
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
@@ -35,6 +27,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="itsme.com.moviecatalogue.FirstActivity" />
         </activity>
+
+        <activity
+            android:name=".SharedPrefrenceActivity"
+            android:label="@string/sharedPrefTitle"
+            android:parentActivityName=".FirstActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FirstActivity" />
+        </activity>
+
+        <service android:name=".Service.FetchDataService" />
+        <receiver android:name=".Service.FetchDataService$AlarmReceiver" />
+
+        <provider
+            android:authorities="itsme.com.moviecatalogue"
+            android:name=".Data.MovieProvider" />
+
     </application>
 
 </manifest>
