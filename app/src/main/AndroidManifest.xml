@@ -39,7 +39,6 @@
         </activity>
 
         <service android:name=".Service.FetchDataService" />
-        <receiver android:name=".Service.FetchDataService$AlarmReceiver" />
 
         <provider
             android:authorities="itsme.com.moviecatalogue"

@@ -1,7 +1,5 @@
 package itsme.com.moviecatalogue;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -45,6 +43,7 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
             MovieContract.Movie.COLUMN_IS_FAVOURITE
     };
 
+    //TODO:Modify the projection to get only required data.
     //Column nos for the projections
     public static final int PROJ_ID = 0;
     public static final int PROJ_MOVIE_ID = 1;
@@ -76,12 +75,6 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        updateGridView(getView());
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_grid_view_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -103,6 +96,8 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
     //User declared methods
     private void updateGridView(View rootView) {
 
+        mContext = getActivity();
+
         ProgressBar pb = (ProgressBar) rootView.findViewById(R.id.pb1);
         pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
 
@@ -114,13 +109,7 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
         Intent serviceIntent = new Intent(mContext, FetchDataService.class);
         serviceIntent.putExtra(EXTRA_SORT_ORDER, Utility.getPrefferedSorting(mContext));
 
-        //Wrap in a pending intent which only fires once.
-        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, serviceIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-
-        //Set the AlarmManager to wake up the system.
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
+        mContext.startService(serviceIntent);
     }
 
     @Override
