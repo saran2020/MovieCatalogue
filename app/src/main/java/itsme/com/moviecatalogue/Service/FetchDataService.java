@@ -1,9 +1,7 @@
 package itsme.com.moviecatalogue.Service;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -41,18 +39,18 @@ public class FetchDataService extends IntentService {
     //Constants and Global Variables
     private static final String LOG_TAG = FetchDataService.class.getSimpleName();
     private static final String WORKER_THREAD_NAME = "FetchData";
+    public boolean isServiceActive = false;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
      */
-    public FetchDataService(String name) {
+    public FetchDataService() {
         super(WORKER_THREAD_NAME);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.v(LOG_TAG, "Service started sucessfully");
         HttpURLConnection URLConnection = null;
         BufferedReader reader = null;
         String jsonString = null;
@@ -236,22 +234,12 @@ public class FetchDataService extends IntentService {
         if (cvVector.size() > 0) {
             ContentValues[] contentValues = new ContentValues[cvVector.size()];
             cvVector.toArray(contentValues);
-            inserted = this.getContentResolver().bulkInsert(MovieContract.Movie.CONTENT_URI, contentValues);
+            inserted = this.getContentResolver().
+                    bulkInsert(MovieContract.Movie.CONTENT_URI, contentValues);
         }
 
         Log.v(LOG_TAG, "No of rows inserted: " + inserted);
 
         return;
-    }
-
-    public static class AlarmReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.v("Service class: ", "Service running properly......Hurry");
-            Intent sendIntent = new Intent(context, FetchDataService.class);
-            sendIntent.putExtra(GridViewFragment.EXTRA_SORT_ORDER, intent.getStringExtra(GridViewFragment.EXTRA_SORT_ORDER));
-            context.startService(sendIntent);
-        }
     }
 }
