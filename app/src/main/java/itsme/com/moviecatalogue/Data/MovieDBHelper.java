@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class MovieDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movie_catalogue.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public MovieDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,8 +22,8 @@ public class MovieDBHelper extends SQLiteOpenHelper {
         // Create a table to hold movies.  A movie column consists of the string supplied in the
         // Movie id, title, image, overview, release_date, rating, type, genre ids.
         final String CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieContract.Movie.TABLE_NAME + " (" +
-                MovieContract.Movie._ID + " INTEGER PRIMARY KEY," +
-                MovieContract.Movie.COLUMN_MOVIE_ID + " INTEGER NOT NULL" +
+                MovieContract.Movie._ID + " INTEGER PRIMARY KEY, " +
+                MovieContract.Movie.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 MovieContract.Movie.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MovieContract.Movie.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
                 MovieContract.Movie.COLUMN_POSTER + " BLOB NOT NULL, " +
@@ -31,8 +31,8 @@ public class MovieDBHelper extends SQLiteOpenHelper {
                 MovieContract.Movie.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 MovieContract.Movie.COLUMN_RATING + " REAL NOT NULL, " +
                 MovieContract.Movie.COLUMN_POPULARITY + " REAL NOT NULL, " +
-                MovieContract.Movie.COLUMN_GENRE_IDS + " TEXT NOT NULL " +
-                MovieContract.Movie.COLUMN_IS_FAVOURITE + "INTEGER NOT NULL" +
+                MovieContract.Movie.COLUMN_GENRE_IDS + " TEXT NOT NULL, " +
+                MovieContract.Movie.COLUMN_IS_FAVOURITE + " INTEGER NOT NULL" +
                 " );";
 
         db.execSQL(CREATE_MOVIE_TABLE);
