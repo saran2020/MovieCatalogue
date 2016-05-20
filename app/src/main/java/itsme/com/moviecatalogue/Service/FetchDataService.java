@@ -224,6 +224,15 @@ public class FetchDataService extends IntentService {
             values.put(MovieContract.Movie.COLUMN_IS_FAVOURITE,
                     MovieContract.Movie.IS_FAVOURITE_FALSE);    //We have to set favourite to false when getting the data from cloud.
 
+            Log.v(LOG_TAG, "Movie Title: " + title +
+                    "Release Date: " + format.format(date) +
+                    "Overview: " + overView +
+                    "Posterpath: " + poster_path +
+                    "Rating: " + Float.valueOf(rating) +
+                    "MovieID: " + movie_id +
+                    "Popularity: " + popularity +
+                    "Is_fav: " + MovieContract.Movie.IS_FAVOURITE_FALSE); //Didn't log the poster
+
             if (genres != null)
                 values.put(MovieContract.Movie.COLUMN_GENRE_IDS, genres);
 

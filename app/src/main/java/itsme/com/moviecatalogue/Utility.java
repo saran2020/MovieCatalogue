@@ -15,7 +15,7 @@ import java.net.URL;
  */
 public class Utility {
 
-    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185/";
+    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
 
     /**
      * This method gets the context and returnees the current setting
