@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="appBarColor">#009688</color>
+    <color name="appBarTextColor">#FFFFFF</color>
+    <color name="yearTextColor">#757575</color>
+    <color name="runTimeTextColor">#747474</color>
+    <color name="ratingTextColor">#121212</color>
 </resources>
