@@ -37,14 +37,6 @@ public class GridViewAdapter extends CursorAdapter {
         ImageView imageView = viewHolder.poster;
         Bitmap poster = Utility.getImage(cursor.getBlob(GridViewFragment.PROJ_POSTER));
         imageView.setImageBitmap(poster);
-
-
-        /*Picasso.with(mContext).setLoggingEnabled(false);
-
-        Picasso.with(mContext)
-                .load(poster)
-                .into(imageView);
-*/
     }
 
 

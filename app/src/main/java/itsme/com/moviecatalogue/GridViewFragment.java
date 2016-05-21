@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -25,12 +26,16 @@ import itsme.com.moviecatalogue.Service.FetchDataService;
  * Created by its me on 17-Feb-16.
  * The data what we get from the cloud is only for 20 movies
  */
-public class GridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class GridViewFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     Context mContext;
     GridViewAdapter mAdapter;
     public static final String EXTRA_SORT_ORDER = "SORT_EXTRA";
     public static final int GRID_VIEW_LIMIT = 20;
+
+    private static final String LOG_TAG = GridViewFragment.class.getSimpleName();
+    private static final int MOVIE_LOADER = 0;
 
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
@@ -93,10 +98,17 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
     //User declared methods
     private void updateGridView(View rootView) {
 
         mContext = getActivity();
+        mAdapter = new GridViewAdapter(mContext, null);
 
         ProgressBar pb = (ProgressBar) rootView.findViewById(R.id.pb1);
         pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
@@ -126,14 +138,11 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
         if (sorting.equals(getString(R.string.list_pref_popularity))) {
             sortingOrder = MovieContract.Movie.COLUMN_POPULARITY + " ASC";
         } else {
-            sortingOrder = MovieContract.Movie.COLUMN_RATING +
-                    " ASC " +
-                    " LIMIT" +
-                    GRID_VIEW_LIMIT;
+            sortingOrder = MovieContract.Movie.COLUMN_RATING + " ASC";
         }
         Uri uri = MovieContract.Movie.buildMovieDbUri();
 
-        return new CursorLoader(mContext,
+        return new CursorLoader(getActivity(),
                 uri,
                 MOVIE_PROJECTION,
                 null,

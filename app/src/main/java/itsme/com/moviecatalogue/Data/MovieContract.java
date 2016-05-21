@@ -53,7 +53,7 @@ public class MovieContract {
         public static final int IS_FAVOURITE_TRUE = 1;
 
         //Constants for the URI matcher.
-        public static final String BUILDER_MOVIE_ID = "movie";
+        public static final String BUILDER_MOVIE_ID = "movie_id";
         public static final String BUILDER_MOVIE_IS_FAV = "fav";
         public static final String BUILDER_MOVIE_GENRE = "genre";
 

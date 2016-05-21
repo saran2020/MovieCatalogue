@@ -42,7 +42,8 @@
 
         <provider
             android:authorities="itsme.com.moviecatalogue"
-            android:name=".Data.MovieProvider" />
+            android:name=".Data.MovieProvider"
+            android:exported="false" />
 
     </application>
 
