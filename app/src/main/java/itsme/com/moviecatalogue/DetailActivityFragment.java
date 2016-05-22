@@ -1,21 +1,42 @@
 package itsme.com.moviecatalogue;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import itsme.com.moviecatalogue.Data.MovieContract;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class DetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    //Constants for the class.
+    private static final int DETAIL_LOADER = 101;
+    private static final String DETAIL_URI = "movie_uri";
+    Uri mUri;
+
+    //Views that needs to be populated
+    TextView mTitleTextView;
+    ImageView mPosterView;
+    TextView mReleaseYear;
+    TextView mRatingTextView;
+    TextView mRunTimeTextView;
+    ImageButton mIsFavImageButton;
+    TextView mSynopsisTextView;
+    ListView mTrailerListView;
 
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
@@ -45,65 +66,68 @@ public class DetailActivityFragment extends Fragment {
     public static final int PROJ_GENER_IDS = 9;
     public static final int PROJ_IS_FAV = 10;
 
-
-    //Constants and global variables
-    private String TITLE;
-    private String IMAGE;
-    private String OVERVIEW;
-    private String RELEASE_DATE;
-    private Float RATING;
-
-    //Overrided methods
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle bundle = getActivity().getIntent().getExtras();
-        if (bundle != null) {
-            TITLE = bundle.getString("Title");
-            IMAGE = bundle.getString("Image");
-            OVERVIEW = bundle.getString("Overview");
-            RELEASE_DATE = bundle.getString("Release date");
-            RATING = bundle.getFloat("Rating");
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        updateGUI(rootView);
+        mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
+        mPosterView = (ImageView) rootView.findViewById(R.id.poster_image);
+        mReleaseYear = (TextView) rootView.findViewById(R.id.release_year);
+        mRatingTextView = (TextView) rootView.findViewById(R.id.ratings);
+        mRunTimeTextView = (TextView) rootView.findViewById(R.id.run_time);
+        mIsFavImageButton = (ImageButton) rootView.findViewById(R.id.is_fav);
+        mSynopsisTextView = (TextView) rootView.findViewById(R.id.synopsis);
+        mTrailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
 
         return rootView;
     }
 
-    //Userdefined methods
-    private void updateGUI(View rootView) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+    }
 
-        //Update the poster
-        IMAGE = "http://image.tmdb.org/t/p/w154/" + IMAGE;
-        ImageView poster = (ImageView) rootView.findViewById(R.id.imgView_Poster);
-        Picasso.with(getActivity().getBaseContext())
-                .load(IMAGE)
-                .into(poster);
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        //Update the release date
-        TextView releaseDate = (TextView) rootView.findViewById(R.id.txtView_RelaseDate);
-        releaseDate.setText(RELEASE_DATE);
+        if (mUri != null) {
 
-        //Update the Overview
-        TextView overView = (TextView) rootView.findViewById(R.id.txtView_OverView);
-        overView.setText(OVERVIEW);
+            return new CursorLoader(getActivity(),
+                    mUri,
+                    MOVIE_PROJECTION,
+                    null,
+                    null,
+                    null);
+        }
+        return null;
+    }
 
-        //Update movie Title
-        TextView title = (TextView) rootView.findViewById(R.id.txtView_MovieTitle);
-        title.setText(TITLE);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.moveToFirst()) {
+            mTitleTextView.setText(data.getString(PROJ_TITLE));
+            mPosterView.setImageBitmap(Utility.getImage(data.getBlob(PROJ_POSTER)));
+            mReleaseYear.setText(Utility.getYear(data.getString(PROJ_RELEASE_DATE)));
+            mRatingTextView.setText(Utility.getRating(data.getFloat(PROJ_RATING)));
+            mRunTimeTextView.setText(data.getString(PROJ_RUNTIME) + " min");
+            mSynopsisTextView.setText(data.getString(PROJ_OVERVIEW));
+            if ("false".equals(data.getString(PROJ_IS_FAV)))
+                mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);
+            else
+                mIsFavImageButton.setImageResource(R.drawable.ic_star_yellow);
+            mTrailerListView;
+        }
+    }
 
-        //Update the Ratings of thr movie
-        TextView ratings = (TextView) rootView.findViewById(R.id.txtView_Ratings);
-        ratings.setText(Float.toString(RATING));
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
-        return;
     }
 }
