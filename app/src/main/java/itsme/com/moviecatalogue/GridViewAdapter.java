@@ -17,9 +17,9 @@ public class GridViewAdapter extends CursorAdapter {
     //Constants and Global variables
     private Context mContext;
 
-    public GridViewAdapter(Context context, Cursor c) {
-        super(context, c);
-        mContext = context;
+    public GridViewAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+        this.mContext = context;
     }
 
     @Override

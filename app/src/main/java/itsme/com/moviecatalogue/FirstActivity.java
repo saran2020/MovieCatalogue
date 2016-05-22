@@ -1,9 +1,11 @@
 package itsme.com.moviecatalogue;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class FirstActivity extends AppCompatActivity {
+public class FirstActivity extends AppCompatActivity implements GridViewFragment.CallBack {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,5 +20,12 @@ public class FirstActivity extends AppCompatActivity {
                             , new GridViewFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public void onItemSelected(Uri contentUri) {
+        Intent intent = new Intent(this, DetailActivity.class)
+                .setData(contentUri);
+        startActivity(intent);
     }
 }

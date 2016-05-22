@@ -25,7 +25,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     //Constants for the class.
     private static final int DETAIL_LOADER = 101;
-    private static final String DETAIL_URI = "movie_uri";
+    public static final String DETAIL_URI = "movie_uri";
     Uri mUri;
 
     //Views that needs to be populated

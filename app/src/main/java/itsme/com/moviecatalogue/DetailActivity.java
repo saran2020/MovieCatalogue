@@ -12,10 +12,15 @@ public class DetailActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
 
+            Bundle argument = new Bundle();
+            argument.putParcelable(DetailActivityFragment.DETAIL_URI, getIntent().getData());
+
+            DetailActivityFragment fragment = new DetailActivityFragment();
+            fragment.setArguments(argument);
+
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.container_DetailView,
-                            new DetailActivityFragment())
+                    .add(R.id.container_DetailView, fragment)
                     .commit();
         }
     }

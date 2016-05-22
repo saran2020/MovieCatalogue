@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
@@ -58,6 +59,12 @@ public class GridViewFragment extends Fragment
     public static final int PROJ_GENER_IDS = 5;
     public static final int PROJ_IS_FAV = 6;
 
+    public interface CallBack {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri uri);
+    }
 
     public GridViewFragment() {
         this.mContext = getActivity();
@@ -108,7 +115,7 @@ public class GridViewFragment extends Fragment
     private void updateGridView(View rootView) {
 
         mContext = getActivity();
-        mAdapter = new GridViewAdapter(mContext, null);
+        mAdapter = new GridViewAdapter(mContext, null, 0);
 
         ProgressBar pb = (ProgressBar) rootView.findViewById(R.id.pb1);
         pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
@@ -116,6 +123,15 @@ public class GridViewFragment extends Fragment
         //Updating the gridView so that it can be used in PostExecute to update the UI
         GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
         gridViewMovie.setAdapter(mAdapter);
+        gridViewMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    ((CallBack) getActivity()).onItemSelected(MovieContract.Movie.buildMovieUri(cursor.getLong(PROJ_MOVIE_ID)));
+                }
+            }
+        });
 
 
         Intent serviceIntent = new Intent(mContext, FetchDataService.class);
