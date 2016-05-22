@@ -38,6 +38,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     TextView mSynopsisTextView;
     ListView mTrailerListView;
 
+    //Adapter for the Trailer List View
+    TrailerAdapter mAdpter;
+
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
             MovieContract.Movie._ID,
@@ -75,6 +78,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
         }
 
+        mAdpter = new TrailerAdapter(getActivity(), null, 0);
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
@@ -86,6 +90,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mSynopsisTextView = (TextView) rootView.findViewById(R.id.synopsis);
         mTrailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
 
+        mTrailerListView.setAdapter(mAdpter);
         return rootView;
     }
 
@@ -122,12 +127,12 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);
             else
                 mIsFavImageButton.setImageResource(R.drawable.ic_star_yellow);
-            mTrailerListView;
+            mAdpter.swapCursor(data);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mAdpter.swapCursor(null);
     }
 }

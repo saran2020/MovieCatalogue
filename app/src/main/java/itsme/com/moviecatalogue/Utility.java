@@ -52,4 +52,12 @@ public class Utility {
     public static Bitmap getImage(byte[] imageArray) {
         return BitmapFactory.decodeByteArray(imageArray, 0, imageArray.length);
     }
+
+    public static String getYear(String releaseDate) {
+        return releaseDate.split("-", 2)[0];
+    }
+
+    public static String getRating(float floatRating) {
+        return String.format("%.2f", floatRating);
+    }
 }
