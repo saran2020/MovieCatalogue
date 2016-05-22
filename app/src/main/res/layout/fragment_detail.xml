@@ -20,6 +20,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <TextView
+                android:id="@+id/movie_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -41,6 +42,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/poster_image"
                     android:layout_width="135dp"
                     android:layout_height="200dp"
                     android:scaleType="centerCrop"
@@ -53,6 +55,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/release_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2015"
@@ -60,6 +63,7 @@
                     android:textSize="30sp" />
 
                 <TextView
+                    android:id="@+id/ratings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -70,6 +74,7 @@
                     android:textStyle="italic" />
 
                 <TextView
+                    android:id="@+id/run_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -80,12 +85,13 @@
 
 
                 <ImageButton
+                    android:id="@+id/is_fav"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginTop="4dp"
                     android:background="@android:color/transparent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_star_yellow" />
+                    android:src="@drawable/ic_star_grey" />
             </LinearLayout>
 
         </LinearLayout>
@@ -96,6 +102,7 @@
             android:layout_margin="16dp">
 
             <TextView
+                android:id="@+id/synopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/dummy_data"
@@ -117,15 +124,10 @@
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/yearTextColor" />
 
-        <Button
+        <ListView
+            android:id="@+id/trailer_list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/ic_play_icon"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="Trailer 1" />
+            android:layout_height="wrap_content" />
 
         <View
             android:layout_width="match_parent"
@@ -134,6 +136,13 @@
             android:layout_marginRight="16dp"
             android:background="@android:color/darker_gray" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Reviews: "
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/yearTextColor" />
 
     </LinearLayout>
 </ScrollView>
