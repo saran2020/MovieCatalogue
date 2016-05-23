@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
+import itsme.com.moviecatalogue.Adapter.GridViewAdapter;
 import itsme.com.moviecatalogue.Data.MovieContract;
 import itsme.com.moviecatalogue.Service.FetchDataService;
 

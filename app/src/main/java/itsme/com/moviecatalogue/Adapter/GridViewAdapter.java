@@ -1,4 +1,4 @@
-package itsme.com.moviecatalogue;
+package itsme.com.moviecatalogue.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import itsme.com.moviecatalogue.GridViewFragment;
+import itsme.com.moviecatalogue.R;
+import itsme.com.moviecatalogue.Utility;
 
 /**
  * Created by its me on 17-Feb-16.

@@ -39,10 +39,11 @@
         </activity>
 
         <service android:name=".Service.FetchDataService" />
+        <service android:name=".Service.GetMovieDetailsService" />
 
         <provider
-            android:authorities="itsme.com.moviecatalogue"
             android:name=".Data.MovieProvider"
+            android:authorities="itsme.com.moviecatalogue"
             android:exported="false" />
 
     </application>

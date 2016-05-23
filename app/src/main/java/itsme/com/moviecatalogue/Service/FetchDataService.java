@@ -50,7 +50,6 @@ public class FetchDataService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.v(LOG_TAG, "Service started sucessfully");
         HttpURLConnection URLConnection = null;
         BufferedReader reader = null;
         String jsonString = null;
@@ -114,7 +113,7 @@ public class FetchDataService extends IntentService {
 
             Log.v(LOG_TAG, "JSONString" + jsonString);
         } catch (IOException e) {
-            Log.e("FetchMovieDataTask", "ERROR" + e.toString());
+            Log.e(LOG_TAG, "ERROR" + e.toString());
         } finally {
             if (URLConnection != null) {
                 URLConnection.disconnect();
@@ -124,7 +123,7 @@ public class FetchDataService extends IntentService {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    Log.e("FetchMovieDataTask", "ERROR closing stream" + e.toString());
+                    Log.e(LOG_TAG, "ERROR closing stream" + e.toString());
                 }
             }
         }

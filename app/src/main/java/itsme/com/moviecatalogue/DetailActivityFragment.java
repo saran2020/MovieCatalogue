@@ -1,5 +1,7 @@
 package itsme.com.moviecatalogue;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import itsme.com.moviecatalogue.Adapter.TrailerAdapter;
 import itsme.com.moviecatalogue.Data.MovieContract;
+import itsme.com.moviecatalogue.Service.GetMovieDetailsService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -27,6 +31,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private static final int DETAIL_LOADER = 101;
     public static final String DETAIL_URI = "movie_uri";
     Uri mUri;
+    Context mContext;
 
     //Views that needs to be populated
     TextView mTitleTextView;
@@ -69,16 +74,35 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public static final int PROJ_GENER_IDS = 9;
     public static final int PROJ_IS_FAV = 10;
 
+    public DetailActivityFragment() {
+        mContext = getActivity();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+
+            //Get the uri for the data of the detailView. Also get the movie id from the uri
+            // to pass it to the GetMovieDetailsService for the trailer.
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
+            }
+
+            String movieID = MovieContract.Movie.getIdFromUri(mUri);
+            Intent serviceIntent = new Intent(mContext, GetMovieDetailsService.class);
+            serviceIntent.putExtra(GetMovieDetailsService.EXTRA_MOVIE_ID, movieID);
+            mContext.startService(serviceIntent);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
-        }
-
-        mAdpter = new TrailerAdapter(getActivity(), null, 0);
+        mAdpter = new TrailerAdapter(mContext, null, 0);
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
@@ -104,7 +128,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
         if (mUri != null) {
 
-            return new CursorLoader(getActivity(),
+            return new CursorLoader(mContext,
                     mUri,
                     MOVIE_PROJECTION,
                     null,
