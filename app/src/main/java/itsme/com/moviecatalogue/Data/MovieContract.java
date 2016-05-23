@@ -48,6 +48,8 @@ public class MovieContract {
         public static final String COLUMN_GENRE_IDS = "genres";
         public static final String COLUMN_IS_FAVOURITE = "is_favourite";
         public static final String COLUMN_POSTER_PATH = "poster_path";
+        public static final String COLUMN_TRAILERS = "trailers";
+
         //Constants for is Favourite
         public static final int IS_FAVOURITE_FALSE = 0;
         public static final int IS_FAVOURITE_TRUE = 1;
