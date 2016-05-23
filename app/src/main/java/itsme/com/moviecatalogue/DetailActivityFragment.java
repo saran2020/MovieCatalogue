@@ -38,7 +38,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     ImageView mPosterView;
     TextView mReleaseYear;
     TextView mRatingTextView;
-    TextView mRunTimeTextView;
     ImageButton mIsFavImageButton;
     TextView mSynopsisTextView;
     ListView mTrailerListView;
@@ -109,7 +108,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mPosterView = (ImageView) rootView.findViewById(R.id.poster_image);
         mReleaseYear = (TextView) rootView.findViewById(R.id.release_year);
         mRatingTextView = (TextView) rootView.findViewById(R.id.ratings);
-        mRunTimeTextView = (TextView) rootView.findViewById(R.id.run_time);
         mIsFavImageButton = (ImageButton) rootView.findViewById(R.id.is_fav);
         mSynopsisTextView = (TextView) rootView.findViewById(R.id.synopsis);
         mTrailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
@@ -145,7 +143,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             mPosterView.setImageBitmap(Utility.getImage(data.getBlob(PROJ_POSTER)));
             mReleaseYear.setText(Utility.getYear(data.getString(PROJ_RELEASE_DATE)));
             mRatingTextView.setText(Utility.getRating(data.getFloat(PROJ_RATING)));
-            mRunTimeTextView.setText(data.getString(PROJ_RUNTIME) + " min");
             mSynopsisTextView.setText(data.getString(PROJ_OVERVIEW));
             if ("false".equals(data.getString(PROJ_IS_FAV)))
                 mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);

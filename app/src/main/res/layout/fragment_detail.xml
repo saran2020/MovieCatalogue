@@ -73,17 +73,6 @@
                     android:textSize="22sp"
                     android:textStyle="italic" />
 
-                <TextView
-                    android:id="@+id/run_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="120 min"
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="@color/ratingTextColor" />
-
-
                 <ImageButton
                     android:id="@+id/is_fav"
                     android:layout_width="40dp"
@@ -135,14 +124,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:background="@android:color/darker_gray" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Reviews: "
-            android:textAppearance="?android:textAppearanceLarge"
-            android:textColor="@color/yearTextColor" />
 
     </LinearLayout>
 </ScrollView>
