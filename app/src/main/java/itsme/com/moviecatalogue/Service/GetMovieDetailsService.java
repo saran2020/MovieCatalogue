@@ -51,14 +51,10 @@ public class GetMovieDetailsService extends IntentService {
 
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.Movie.COLUMN_TRAILERS, trailers);
-
-        String whereClause = MovieContract.Movie.COLUMN_MOVIE_ID + "=? ";
-        String[] whereArray = {movieId};
-
         int rowsUpdated = 0;
 
         if (cv.containsKey(MovieContract.Movie.COLUMN_TRAILERS)) {
-            rowsUpdated = this.getContentResolver().update(uri, cv, whereClause, whereArray);
+            rowsUpdated = this.getContentResolver().update(uri, cv, null, null);
         }
 
         Log.v(LOG_TAG, "RowsUpdated = " + rowsUpdated);

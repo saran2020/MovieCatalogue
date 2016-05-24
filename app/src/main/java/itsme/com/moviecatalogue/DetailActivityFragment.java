@@ -1,5 +1,6 @@
 package itsme.com.moviecatalogue;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import itsme.com.moviecatalogue.Adapter.TrailerAdapter;
 import itsme.com.moviecatalogue.Data.MovieContract;
@@ -32,6 +34,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public static final String DETAIL_URI = "movie_uri";
     Uri mUri;
     Context mContext;
+    boolean isFav;
+    String movieTitle;
+    long movieId;
 
     //Views that needs to be populated
     TextView mTitleTextView;
@@ -43,7 +48,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     ListView mTrailerListView;
 
     //Adapter for the Trailer List View
-    TrailerAdapter mAdpter;
+    TrailerAdapter mAdapter;
 
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
@@ -73,13 +78,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public static final int PROJ_GENER_IDS = 9;
     public static final int PROJ_IS_FAV = 10;
 
-    public DetailActivityFragment() {
-        mContext = getActivity();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = getActivity();
 
         if (savedInstanceState == null) {
 
@@ -101,7 +104,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mAdpter = new TrailerAdapter(mContext, null, 0);
+        mAdapter = new TrailerAdapter(mContext, null, 0);
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
@@ -112,12 +115,49 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mSynopsisTextView = (TextView) rootView.findViewById(R.id.synopsis);
         mTrailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
 
-        mTrailerListView.setAdapter(mAdpter);
+        mIsFavImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFav) {
+                    isFav = false;
+                    mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);
+                    Toast.makeText(mContext,
+                            movieTitle + " removed from favourite", Toast.LENGTH_SHORT).show();
+                } else {
+                    isFav = true;
+                    mIsFavImageButton.setImageResource(R.drawable.ic_star_yellow);
+                    Toast.makeText(mContext,
+                            movieTitle + " added to favourite", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        mTrailerListView.setAdapter(mAdapter);
         return rootView;
+    }
+
+    /**
+     * Before leaving the Fragment we have to update the current status of the fav into the db.
+     * It checks if the constant isFav is true or not. If true sets to 1 or else sets to 0.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.Movie.COLUMN_IS_FAVOURITE, (isFav) ? 1 : 0);
+        String whereCluse = MovieContract.Movie.COLUMN_MOVIE_ID + "=?";
+        String[] whereArgs = {Long.toString(movieId)};
+        mContext.getContentResolver().update(
+                MovieContract.Movie.buildMovieUri(movieId),
+                cv,
+                whereCluse,
+                whereArgs);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(DETAIL_LOADER, null, this);
     }
 
@@ -139,21 +179,24 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
-            mTitleTextView.setText(data.getString(PROJ_TITLE));
+            movieId = data.getLong(PROJ_MOVIE_ID);
+            movieTitle = data.getString(PROJ_TITLE);
+            mTitleTextView.setText(movieTitle);
             mPosterView.setImageBitmap(Utility.getImage(data.getBlob(PROJ_POSTER)));
             mReleaseYear.setText(Utility.getYear(data.getString(PROJ_RELEASE_DATE)));
             mRatingTextView.setText(Utility.getRating(data.getFloat(PROJ_RATING)));
             mSynopsisTextView.setText(data.getString(PROJ_OVERVIEW));
-            if ("false".equals(data.getString(PROJ_IS_FAV)))
-                mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);
-            else
+            isFav = (1 == (data.getInt(PROJ_IS_FAV)));
+            if (isFav)
                 mIsFavImageButton.setImageResource(R.drawable.ic_star_yellow);
-            mAdpter.swapCursor(data);
+            else
+                mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);
+            //mAdapter.swapCursor(data);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdpter.swapCursor(null);
+        //mAdapter.swapCursor(null);
     }
 }

@@ -150,7 +150,6 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_WITH_GENRE: {
                 //Todo:Based on the way data is getting stored into the db.
                 // Create a query which gets data ffor a particular genre.
-
             }
 
             default:
@@ -206,18 +205,30 @@ public class MovieProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
-        int rowsUpdated = mOpenHelper.getWritableDatabase().update(
-                MovieContract.Movie.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs
-        );
+        int rowsUpdated = 0;
+        switch (matcher.match(uri)) {
+            case MOVIE_WITH_ID:
+                rowsUpdated = updateMovieData(uri, values);
+        }
 
         if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
         return rowsUpdated;
+    }
+
+    private int updateMovieData(Uri uri, ContentValues values) {
+
+        String selection = MovieContract.Movie.COLUMN_MOVIE_ID + "=?";
+        String[] selectionArgs = {MovieContract.Movie.getIdFromUri(uri)};
+
+        return mOpenHelper.getWritableDatabase().update(
+                MovieContract.Movie.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
     }
 
     /**
