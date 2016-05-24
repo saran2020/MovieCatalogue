@@ -77,7 +77,7 @@ public class MovieContract {
         }
 
         public static String getIdFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
+            return uri.getPathSegments().get(2);
         }
 
         public static Uri buildMovieDbUri() {

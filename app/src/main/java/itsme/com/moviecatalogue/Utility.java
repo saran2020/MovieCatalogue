@@ -45,6 +45,7 @@ public class Utility {
     }
 
     private static Bitmap getBitmapFromUrl(String url) throws IOException {
+
         URL imageUrl = new URL(url);
         return BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
     }
@@ -54,10 +55,10 @@ public class Utility {
     }
 
     public static String getYear(String releaseDate) {
-        return releaseDate.split("-", 2)[0];
+        return releaseDate.split("-")[2];
     }
 
     public static String getRating(float floatRating) {
-        return String.format("%.2f", floatRating);
+        return String.format("%.1f/10", floatRating);
     }
 }

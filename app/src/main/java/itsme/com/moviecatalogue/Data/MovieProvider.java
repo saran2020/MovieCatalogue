@@ -51,7 +51,7 @@ public class MovieProvider extends ContentProvider {
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
         //Based on the URL which is received it will decide what the system is actually looking for
-        // "/movie/<id>"
+        // "/movie/movie_id/<id>"
         matcher.addURI(authority, MovieContract.PATH_MOVIE +
                 MovieContract.Movie.MATCHER_MOVIE_ID + "/#", MOVIE_WITH_ID);
         // "/movie/genre/<id>"
@@ -131,7 +131,7 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
 
-            //"/movie/<id>"
+            //"/movie/movie_id/<id>"
             case MOVIE_WITH_ID: {
                 String[] selectionArgs = new String[]{MovieContract.Movie.getIdFromUri(uri)};
                 retCursor = mOpenHelper.getReadableDatabase().query(

@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import itsme.com.moviecatalogue.Data.MovieContract;
 
@@ -42,6 +43,7 @@ public class GetMovieDetailsService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         String movieId = intent.getStringExtra(EXTRA_MOVIE_ID);
+        Log.v(LOG_TAG, "MovieID: " + movieId);
 
         String trailers = getTrailers(movieId);
 
@@ -50,7 +52,7 @@ public class GetMovieDetailsService extends IntentService {
         ContentValues cv = new ContentValues();
         cv.put(MovieContract.Movie.COLUMN_TRAILERS, trailers);
 
-        String whereClause = MovieContract.Movie.MATCHER_MOVIE_ID + "=? ";
+        String whereClause = MovieContract.Movie.COLUMN_MOVIE_ID + "=? ";
         String[] whereArray = {movieId};
 
         int rowsUpdated = 0;
@@ -71,7 +73,7 @@ public class GetMovieDetailsService extends IntentService {
         try {
             final String BASE_URL = "http://api.themoviedb.org/3/movie";
             final String APP_ID = "api_key";
-            final String VIDEOS_PATH = "videos?";
+            final String VIDEOS_PATH = "videos";
 
             Uri uri = Uri.parse(BASE_URL).buildUpon()
                     .appendPath(movieId)
@@ -80,7 +82,10 @@ public class GetMovieDetailsService extends IntentService {
                             itsme.com.moviecatalogue.BuildConfig.THE_MOVIE_DB_API_KEY)
                     .build();
 
-            URL urlObject = new URL(uri.toString());
+            //This will remove the %3F from the url http://api.themoviedb.org/3/movie/movie_id/videos%3F?api_key=###
+            String decodeUri = URLDecoder.decode(uri.toString(), "UTF-8");
+            Log.v(LOG_TAG, "Trailer uri: " + decodeUri);
+            URL urlObject = new URL(decodeUri);
             URLConnection = (HttpURLConnection) urlObject.openConnection();
             URLConnection.setRequestMethod("GET");
             URLConnection.setConnectTimeout(5000);
@@ -151,8 +156,7 @@ public class GetMovieDetailsService extends IntentService {
         JSONArray trailerArray = movieTrailerJson.getJSONArray(JSON_RESULT);
 
         for (int pos = 0; pos < trailerArray.length(); pos++) {
-            //Get all the keys of the trailers and make a single trsing out of them.
-
+            //Get all the keys of the trailers and make it to a single string separated by ','.
             JSONObject trailer = trailerArray.getJSONObject(pos);
 
             if (trailerCounter < 2 && (TRAILER.equals(trailer.getString(TRAILER_TYPE)))) {
@@ -160,7 +164,7 @@ public class GetMovieDetailsService extends IntentService {
                 trailerCounter++;
                 //After getting the key for one trailer separate it with a ','.
                 if (trailerCounter == 1)
-                    returnValue.concat(",");
+                    returnValue += ",";
             }
         }
         Log.v(LOG_TAG, "Trailer String: " + returnValue);

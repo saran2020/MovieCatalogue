@@ -13,7 +13,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:background="@color/appBarColor"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -24,10 +24,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:text="Chappie"
                 android:textColor="@color/appBarTextColor"
                 android:textSize="50sp"
                 android:textStyle="bold" />
+            <!--android:text="Chappie"-->
         </android.support.v7.widget.Toolbar>
 
         <LinearLayout
@@ -45,8 +45,8 @@
                     android:id="@+id/poster_image"
                     android:layout_width="135dp"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/w185" />
+                    android:scaleType="centerCrop" />
+                <!--android:src="@drawable/w185"-->
             </FrameLayout>
 
             <LinearLayout
@@ -58,9 +58,9 @@
                     android:id="@+id/release_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2015"
                     android:textColor="@color/yearTextColor"
                     android:textSize="30sp" />
+                <!--android:text="2015"-->
 
                 <TextView
                     android:id="@+id/ratings"
@@ -68,10 +68,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="8.1/10"
                     android:textColor="@color/runTimeTextColor"
-                    android:textSize="22sp"
-                    android:textStyle="italic" />
+                    android:textSize="22sp" />
+                <!--android:text="8.1/10"-->
 
                 <ImageButton
                     android:id="@+id/is_fav"
@@ -79,8 +78,8 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="4dp"
                     android:background="@android:color/transparent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_star_grey" />
+                    android:scaleType="centerCrop" />
+                <!--android:src="@drawable/ic_star_grey"-->
             </LinearLayout>
 
         </LinearLayout>
@@ -94,8 +93,8 @@
                 android:id="@+id/synopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dummy_data"
                 android:textAppearance="?android:textAppearance" />
+            <!--android:text="@string/dummy_data"-->
         </ScrollView>
 
         <View
