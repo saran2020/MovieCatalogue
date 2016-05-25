@@ -1,5 +1,6 @@
 package itsme.com.moviecatalogue;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -14,13 +15,16 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import itsme.com.moviecatalogue.Adapter.TrailerAdapter;
+import java.util.ArrayList;
+
 import itsme.com.moviecatalogue.Data.MovieContract;
 import itsme.com.moviecatalogue.Service.GetMovieDetailsService;
 
@@ -37,6 +41,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     boolean isFav;
     String movieTitle;
     long movieId;
+    String[] trailerKeys;
+    String YOUTUBE_LINK = "http://www.youtube.com/watch?v=";
 
     //Views that needs to be populated
     TextView mTitleTextView;
@@ -48,7 +54,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     ListView mTrailerListView;
 
     //Adapter for the Trailer List View
-    TrailerAdapter mAdapter;
+    ArrayAdapter<String> mAdapter;
 
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
@@ -62,7 +68,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             MovieContract.Movie.COLUMN_RATING,
             MovieContract.Movie.COLUMN_POPULARITY,
             MovieContract.Movie.COLUMN_GENRE_IDS,
-            MovieContract.Movie.COLUMN_IS_FAVOURITE
+            MovieContract.Movie.COLUMN_IS_FAVOURITE,
+            MovieContract.Movie.COLUMN_TRAILERS
     };
 
     //Column nos for the projections
@@ -77,6 +84,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public static final int PROJ_POPULARITY = 8;
     public static final int PROJ_GENER_IDS = 9;
     public static final int PROJ_IS_FAV = 10;
+    public static final int PROJ_TRAILER = 11;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,7 +112,11 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mAdapter = new TrailerAdapter(mContext, null, 0);
+        mAdapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.trailer_layout, //Sets the layout that needs to be populated
+                R.id.trailer_text_view, //Sets the id of the TextView that needs to be populated with the conetents in the array.
+                new ArrayList<String>()); //Send an empty List at the beginning.
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
@@ -133,8 +145,30 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             }
         });
 
+        // Set the adapter to the listView and also handel the click of the the item.
         mTrailerListView.setAdapter(mAdapter);
+        mTrailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                watchTrailerYoutube(position);
+            }
+        });
+
         return rootView;
+    }
+
+    private void watchTrailerYoutube(int position) {
+        if (trailerKeys != null) {
+            try {
+                startActivity(new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("vnd.youtube:" + trailerKeys[position])));
+            } catch (ActivityNotFoundException ex) {
+                startActivity(new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(YOUTUBE_LINK + trailerKeys[position])));
+            }
+        }
     }
 
     /**
@@ -191,7 +225,55 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 mIsFavImageButton.setImageResource(R.drawable.ic_star_yellow);
             else
                 mIsFavImageButton.setImageResource(R.drawable.ic_star_grey);
-            //mAdapter.swapCursor(data);
+
+            // Get the trailer keys and update the list View based on the no of keys
+            mAdapter.clear();
+
+            String trailer = data.getString(PROJ_TRAILER);
+            if (trailer.contains(","))
+                trailerKeys = trailer.split(",");
+            else
+                trailerKeys = new String[]{trailer};
+            for (int i = 0; i < trailerKeys.length; i++) {
+                mAdapter.add("Trailer " + (i + 1));
+            }
+            setListViewHeightBasedOnItems();
+        }
+    }
+
+    /**
+     * This sets the height of the List view based on number of conetnts in the view.
+     *
+     * @return True if all went well. False or else.
+     */
+    private boolean setListViewHeightBasedOnItems() {
+
+        if (mAdapter != null) {
+
+            int numberOfItems = mAdapter.getCount();
+
+            // Get total height of all items.
+            int totalItemsHeight = 0;
+            for (int itemPos = 0; itemPos < numberOfItems; itemPos++) {
+                View item = mAdapter.getView(itemPos, null, mTrailerListView);
+                item.measure(0, 0);
+                totalItemsHeight += item.getMeasuredHeight();
+            }
+
+            // Get total height of all item dividers.
+            int totalDividersHeight = mTrailerListView.getDividerHeight() *
+                    (numberOfItems - 1);
+
+            // Set list height.
+            ViewGroup.LayoutParams params = mTrailerListView.getLayoutParams();
+            params.height = totalItemsHeight + totalDividersHeight;
+            mTrailerListView.setLayoutParams(params);
+            mTrailerListView.requestLayout();
+
+            return true;
+
+        } else {
+            return false;
         }
     }
 

@@ -81,7 +81,6 @@
                     android:scaleType="centerCrop" />
                 <!--android:src="@drawable/ic_star_grey"-->
             </LinearLayout>
-
         </LinearLayout>
 
         <ScrollView

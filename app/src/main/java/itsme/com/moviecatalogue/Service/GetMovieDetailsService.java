@@ -156,11 +156,12 @@ public class GetMovieDetailsService extends IntentService {
             JSONObject trailer = trailerArray.getJSONObject(pos);
 
             if (trailerCounter < 2 && (TRAILER.equals(trailer.getString(TRAILER_TYPE)))) {
-                returnValue += trailer.getString(YOUTUBE_LINK);
-                trailerCounter++;
                 //After getting the key for one trailer separate it with a ','.
                 if (trailerCounter == 1)
                     returnValue += ",";
+
+                returnValue += trailer.getString(YOUTUBE_LINK);
+                trailerCounter++;
             }
         }
         Log.v(LOG_TAG, "Trailer String: " + returnValue);
