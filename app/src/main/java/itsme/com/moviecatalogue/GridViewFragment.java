@@ -32,13 +32,15 @@ import itsme.com.moviecatalogue.Service.GetMovieDetailsService;
 public class GridViewFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    Context mContext;
-    GridViewAdapter mAdapter;
     public static final String EXTRA_SORT_ORDER = "SORT_EXTRA";
     public static final int GRID_VIEW_LIMIT = 20;
 
     private static final String LOG_TAG = GridViewFragment.class.getSimpleName();
     private static final int MOVIE_LOADER = 0;
+
+    Context mContext;
+    GridViewAdapter mAdapter;
+    ProgressBar pb;
 
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
@@ -119,7 +121,7 @@ public class GridViewFragment extends Fragment
         mContext = getActivity();
         mAdapter = new GridViewAdapter(mContext, null, 0);
 
-        ProgressBar pb = (ProgressBar) rootView.findViewById(R.id.pb1);
+        pb = (ProgressBar) rootView.findViewById(R.id.pb1);
         pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
 
         //Updating the gridView so that it can be used in PostExecute to update the UI
@@ -177,6 +179,7 @@ public class GridViewFragment extends Fragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
+        pb.setVisibility(View.INVISIBLE);
     }
 
     @Override
