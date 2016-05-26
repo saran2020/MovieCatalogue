@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import itsme.com.moviecatalogue.Adapter.GridViewAdapter;
 import itsme.com.moviecatalogue.Data.MovieContract;
 import itsme.com.moviecatalogue.Service.FetchDataService;
+import itsme.com.moviecatalogue.Service.GetMovieDetailsService;
 
 /**
  * Created by its me on 17-Feb-16.
@@ -129,7 +130,13 @@ public class GridViewFragment extends Fragment
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
-                    ((CallBack) getActivity()).onItemSelected(MovieContract.Movie.buildMovieUri(cursor.getLong(PROJ_MOVIE_ID)));
+                    long movieId = cursor.getLong(PROJ_MOVIE_ID);
+                    Intent serviceIntent = new Intent(mContext, GetMovieDetailsService.class);
+                    serviceIntent.putExtra(GetMovieDetailsService.EXTRA_MOVIE_ID, Long.toString(movieId));
+                    mContext.startService(serviceIntent);
+
+                    ((CallBack) getActivity())
+                            .onItemSelected(MovieContract.Movie.buildMovieUri(movieId));
                 }
             }
         });

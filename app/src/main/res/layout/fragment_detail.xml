@@ -83,18 +83,17 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ScrollView
+        <TextView
+            android:id="@+id/synopsis"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_margin="16dp">
-
-            <TextView
-                android:id="@+id/synopsis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearance" />
-            <!--android:text="@string/dummy_data"-->
-        </ScrollView>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:maxLines="4"
+            android:minLines="1"
+            android:scrollbars="vertical"
+            android:textAppearance="?android:textAppearance" />
 
         <View
             android:layout_width="match_parent"

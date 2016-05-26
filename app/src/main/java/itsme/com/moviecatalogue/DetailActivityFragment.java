@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import itsme.com.moviecatalogue.Data.MovieContract;
-import itsme.com.moviecatalogue.Service.GetMovieDetailsService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -36,13 +36,15 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     //Constants for the class.
     private static final int DETAIL_LOADER = 101;
     public static final String DETAIL_URI = "movie_uri";
+    private static final String YOUTUBE_LINK = "http://www.youtube.com/watch?v="; //Default link to the trailers
+
+    //Global variables
     Uri mUri;
     Context mContext;
-    boolean isFav;
-    String movieTitle;
-    long movieId;
-    String[] trailerKeys;
-    String YOUTUBE_LINK = "http://www.youtube.com/watch?v=";
+    boolean isFav; //Will carry if the movie is marked as fav. This will be used to populate the db in the end.
+    String movieTitle; //Will have the title of the movie being shown in the detailView
+    long movieId; //Will have the movieId of the movie being shown in the detailView
+    String[] trailerKeys; //Will hav all the keys to the trailers.
 
     //Views that needs to be populated
     TextView mTitleTextView;
@@ -95,16 +97,10 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         if (savedInstanceState == null) {
 
             //Get the uri for the data of the detailView. Also get the movie id from the uri
-            // to pass it to the GetMovieDetailsService for the trailer.
             Bundle arguments = getArguments();
             if (arguments != null) {
                 mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
             }
-
-            String movieID = MovieContract.Movie.getIdFromUri(mUri);
-            Intent serviceIntent = new Intent(mContext, GetMovieDetailsService.class);
-            serviceIntent.putExtra(GetMovieDetailsService.EXTRA_MOVIE_ID, movieID);
-            mContext.startService(serviceIntent);
         }
     }
 
@@ -153,6 +149,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 watchTrailerYoutube(position);
             }
         });
+
+        //Will set the scrolling for the View
+        mSynopsisTextView.setMovementMethod(new ScrollingMovementMethod());
 
         return rootView;
     }
@@ -237,16 +236,17 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             for (int i = 0; i < trailerKeys.length; i++) {
                 mAdapter.add("Trailer " + (i + 1));
             }
-            setListViewHeightBasedOnItems();
+            setHeightsBasedOnItems();
         }
     }
 
     /**
-     * This sets the height of the List view based on number of conetnts in the view.
+     * This sets the height of the List view based on number of contents in the view.
+     * And wil also call the method to set the heights of the scrollView at the end.
      *
      * @return True if all went well. False or else.
      */
-    private boolean setListViewHeightBasedOnItems() {
+    private boolean setHeightsBasedOnItems() {
 
         if (mAdapter != null) {
 
@@ -271,7 +271,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             mTrailerListView.requestLayout();
 
             return true;
-
         } else {
             return false;
         }
@@ -279,6 +278,5 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        //mAdapter.swapCursor(null);
     }
 }
