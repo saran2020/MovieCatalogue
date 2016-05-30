@@ -2,24 +2,24 @@
     <string name="app_name">Movie Catalogue</string>
     <string name="strSettings">Settings</string>
 
-    <!--Used for the list Prefrence Sort by-->
+    <!--Used for the list Preference Sort by-->
+    <string name="sharedPrefTitle">Settings</string>
+
+    <!--List preference related data-->
     <string name="listPrefTitle">Sort by</string>
     <string name="keyListPref" translatable="false">keySortBy</string>
-    <string name="sharedPrefTitle">Settings</string>
 
     <string-array name="listPrefEntries">
         <item>Popularity</item>
         <item>Rating</item>
     </string-array>
-
-    <!--List preference related data-->
-    <string name="list_pref_popularity">popularity</string>
-    <string name="list_pref_rating">rating</string>
+    <string name="list_pref_popularity">Popularity</string>
+    <string name="list_pref_rating">Rating</string>
     <string-array name="listPrefEntryValue">
         <item>@string/list_pref_popularity</item>
         <item>@string/list_pref_rating</item>
     </string-array>
-    <string name="list_pref_default">@string/list_pref_default</string>
+    <string name="list_pref_default">@string/list_pref_popularity</string>
 
     <string name="title_activity_detail">DetailActivity</string>
     <string name="action_settings">Settings</string>

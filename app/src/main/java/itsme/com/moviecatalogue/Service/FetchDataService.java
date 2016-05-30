@@ -130,9 +130,7 @@ public class FetchDataService extends IntentService {
 
         try {
             formatJsonString(jsonString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | NullPointerException | IOException e) {
             e.printStackTrace();
         }
 
@@ -141,7 +139,7 @@ public class FetchDataService extends IntentService {
 
     //User defined methods
     private void formatJsonString(String jsonString)
-            throws JSONException, IOException {
+            throws JSONException, IOException, NullPointerException {
 
         //Required for formatting
         final String JSON_RESULT = "results";

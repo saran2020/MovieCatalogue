@@ -2,12 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-    android:id="@+id/sort"
-    android:title="@string/listPrefTitle"
-    android:dialogTitle="@string/listPrefTitle"
-    android:key="@string/keyListPref"
-    android:entries="@array/listPrefEntries"
-    android:entryValues="@array/listPrefEntryValue"
-    />
+        android:id="@+id/sort"
+        android:defaultValue="@string/list_pref_default"
+        android:dialogTitle="@string/listPrefTitle"
+        android:entries="@array/listPrefEntries"
+        android:entryValues="@array/listPrefEntryValue"
+        android:key="@string/keyListPref"
+        android:title="@string/listPrefTitle" />
 
 </PreferenceScreen>

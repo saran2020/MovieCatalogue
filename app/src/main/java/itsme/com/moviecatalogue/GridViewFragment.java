@@ -83,9 +83,34 @@ public class GridViewFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container
             , Bundle savedInstanceState) {
+        mContext = getActivity();
 
         View rootView = inflater.inflate(R.layout.grid_view_fragment, container, false);
-        updateGridView(rootView);
+
+        mAdapter = new GridViewAdapter(mContext, null, 0);
+
+/*        pb = (ProgressBar) rootView.findViewById(R.id.pb1);
+        pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar*/
+
+        //Updating the gridView so that it can be used in PostExecute to update the UI
+        GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
+        gridViewMovie.setAdapter(mAdapter);
+        gridViewMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    long movieId = cursor.getLong(PROJ_MOVIE_ID);
+                    Intent serviceIntent = new Intent(mContext, GetMovieDetailsService.class);
+                    serviceIntent.putExtra(GetMovieDetailsService.EXTRA_MOVIE_ID, Long.toString(movieId));
+                    mContext.startService(serviceIntent);
+
+                    ((CallBack) getActivity())
+                            .onItemSelected(MovieContract.Movie.buildMovieUri(movieId));
+                }
+            }
+        });
+        updateGridView();
         return rootView;
     }
 
@@ -115,38 +140,17 @@ public class GridViewFragment extends Fragment
     }
 
     //User declared methods
-    private void updateGridView(View rootView) {
-
-        mContext = getActivity();
-        mAdapter = new GridViewAdapter(mContext, null, 0);
-
-/*        pb = (ProgressBar) rootView.findViewById(R.id.pb1);
-        pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar*/
-
-        //Updating the gridView so that it can be used in PostExecute to update the UI
-        GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
-        gridViewMovie.setAdapter(mAdapter);
-        gridViewMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
-                    long movieId = cursor.getLong(PROJ_MOVIE_ID);
-                    Intent serviceIntent = new Intent(mContext, GetMovieDetailsService.class);
-                    serviceIntent.putExtra(GetMovieDetailsService.EXTRA_MOVIE_ID, Long.toString(movieId));
-                    mContext.startService(serviceIntent);
-
-                    ((CallBack) getActivity())
-                            .onItemSelected(MovieContract.Movie.buildMovieUri(movieId));
-                }
-            }
-        });
-
+    private void updateGridView() {
 
         Intent serviceIntent = new Intent(mContext, FetchDataService.class);
         serviceIntent.putExtra(EXTRA_SORT_ORDER, Utility.getPrefferedSorting(mContext));
 
         mContext.startService(serviceIntent);
+    }
+
+    public void onSortOrderChange() {
+        updateGridView();
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
     }
 
     @Override
@@ -161,9 +165,9 @@ public class GridViewFragment extends Fragment
         String sorting = Utility.getPrefferedSorting(mContext);
         String sortingOrder;
         if (sorting.equals(getString(R.string.list_pref_popularity))) {
-            sortingOrder = MovieContract.Movie.COLUMN_POPULARITY + " ASC";
+            sortingOrder = MovieContract.Movie.COLUMN_POPULARITY + " DESC";
         } else {
-            sortingOrder = MovieContract.Movie.COLUMN_RATING + " ASC";
+            sortingOrder = MovieContract.Movie.COLUMN_RATING + " DESC";
         }
         Uri uri = MovieContract.Movie.buildMovieDbUri();
 

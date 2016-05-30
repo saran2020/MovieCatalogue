@@ -10,9 +10,11 @@ public class FirstActivity extends AppCompatActivity implements GridViewFragment
 
     boolean isDualPane;
     String DETAIL_FRAGMENT_TAG = "detail_view";
+    String myPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        myPref = Utility.getPrefferedSorting(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
@@ -30,6 +32,24 @@ public class FirstActivity extends AppCompatActivity implements GridViewFragment
             }
         } else {
             isDualPane = false;
+        }
+    }
+
+    /**
+     * Check if the preference was changed since the activity got started.
+     * If yes then call the cloud get the new data and refresh the view.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String newPref = Utility.getPrefferedSorting(this);
+        if (null != newPref && !newPref.equals(myPref)) {
+            GridViewFragment gf = (GridViewFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment_grid_view);
+            if (gf != null) {
+                gf.onSortOrderChange();
+            }
+            myPref = newPref;
         }
     }
 
