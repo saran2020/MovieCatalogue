@@ -104,16 +104,15 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mAdapter = new ArrayAdapter<String>(getActivity(),
                 R.layout.trailer_layout, //Sets the layout that needs to be populated
-                R.id.trailer_text_view, //Sets the id of the TextView that needs to be populated with the conetents in the array.
+                R.id.trailer_text_view, //Sets the id of the TextView that needs to be populated with the contents in the array.
                 new ArrayList<String>()); //Send an empty List at the beginning.
-
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mTitleTextView = (TextView) rootView.findViewById(R.id.movie_title);
         mPosterView = (ImageView) rootView.findViewById(R.id.poster_image);
@@ -229,12 +228,14 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             mAdapter.clear();
 
             String trailer = data.getString(PROJ_TRAILER);
-            if (trailer.contains(","))
-                trailerKeys = trailer.split(",");
-            else
-                trailerKeys = new String[]{trailer};
-            for (int i = 0; i < trailerKeys.length; i++) {
-                mAdapter.add("Trailer " + (i + 1));
+            if (null != trailer) {
+                if (trailer.contains(","))
+                    trailerKeys = trailer.split(",");
+                else
+                    trailerKeys = new String[]{trailer};
+                for (int i = 0; i < trailerKeys.length; i++) {
+                    mAdapter.add("Trailer " + (i + 1));
+                }
             }
             setHeightsBasedOnItems();
         }

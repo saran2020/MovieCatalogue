@@ -12,10 +12,4 @@
         android:columnWidth="185dp"
         android:stretchMode="columnWidth" />
 
-    <ProgressBar
-        android:id="@+id/pb1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
 </FrameLayout>

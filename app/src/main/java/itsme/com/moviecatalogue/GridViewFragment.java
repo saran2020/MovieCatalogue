@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ProgressBar;
 
 import itsme.com.moviecatalogue.Adapter.GridViewAdapter;
 import itsme.com.moviecatalogue.Data.MovieContract;
@@ -40,7 +39,7 @@ public class GridViewFragment extends Fragment
 
     Context mContext;
     GridViewAdapter mAdapter;
-    ProgressBar pb;
+//    ProgressBar pb;
 
     //Projections for the cursor Loader
     public static final String[] MOVIE_PROJECTION = {
@@ -121,8 +120,8 @@ public class GridViewFragment extends Fragment
         mContext = getActivity();
         mAdapter = new GridViewAdapter(mContext, null, 0);
 
-        pb = (ProgressBar) rootView.findViewById(R.id.pb1);
-        pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar
+/*        pb = (ProgressBar) rootView.findViewById(R.id.pb1);
+        pb.setVisibility(View.VISIBLE); //Set visibility TRUE for progressbar*/
 
         //Updating the gridView so that it can be used in PostExecute to update the UI
         GridView gridViewMovie = (GridView) rootView.findViewById(R.id.gridview_movie_list);
@@ -179,7 +178,7 @@ public class GridViewFragment extends Fragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
-        pb.setVisibility(View.INVISIBLE);
+//        pb.setVisibility(View.INVISIBLE);
     }
 
     @Override

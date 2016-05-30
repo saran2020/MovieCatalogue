@@ -8,26 +8,51 @@ import android.util.Log;
 
 public class FirstActivity extends AppCompatActivity implements GridViewFragment.CallBack {
 
+    boolean isDualPane;
+    String DETAIL_FRAGMENT_TAG = "detail_view";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
-        if (savedInstanceState == null) {
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.container_first_Screen
-                            , new GridViewFragment())
-                    .commit();
+        if (null != findViewById(R.id.movie_detail_container)) {
+            isDualPane = true;
+
+            if (savedInstanceState == null) {
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.movie_detail_container,
+                                new DetailActivityFragment(), DETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            isDualPane = false;
         }
     }
 
     @Override
     public void onItemSelected(Uri contentUri) {
         Log.v("FirstActivity", "URI: " + contentUri.toString());
-        Intent intent = new Intent(this, DetailActivity.class)
-                .setData(contentUri);
-        startActivity(intent);
+
+        if (isDualPane) {
+
+            Bundle args = new Bundle();
+            args.putParcelable(DetailActivityFragment.DETAIL_URI, contentUri);
+
+            DetailActivityFragment fragment = new DetailActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction().replace(
+                    R.id.movie_detail_container,
+                    fragment,
+                    DETAIL_FRAGMENT_TAG).commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class)
+                    .setData(contentUri);
+            startActivity(intent);
+        }
     }
 }
